@@ -9,7 +9,7 @@ const { status, data: signinCheckResult, hasEmitted } = useSigninCheck();
     return <div>Loading...</div>;
   }
 
-  if (status === "success" && signinCheckResult.signedIn) {
+  if (status === "success" && !signinCheckResult.signedIn) {
     return (<Navigate to="/auth/login" replace />)
   }
 

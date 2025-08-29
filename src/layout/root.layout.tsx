@@ -1,12 +1,13 @@
-import { Outlet } from "react-router"
-
+import { Toaster } from "../components/ui/sonner";
+import { Outlet } from "react-router";
 
 const RootLayout = () => {
   return (
-    <div>
+    <>
       <Outlet />
-    </div>
-  )
-}
-
-export default RootLayout
+      <Toaster
+      />
+    </>
+  );
+};
+export default RootLayout;

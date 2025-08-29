@@ -9,6 +9,7 @@ import ChatPage from "./pages/admin/chat.page"
 import ProfilePage from "./pages/admin/profile.page"
 import LoginPage from "./pages/auth/login.page"
 import RegisterPage from "./pages/auth/register.page"
+import NotFoundPage from "./pages/public/not-foung-page"
 
 const App = () => {
   return (
@@ -18,7 +19,8 @@ const App = () => {
 
     {/** Publicas */}
     <Route element={<PublicLayout />}>
-      <Route index element={<HomePage />}/> 
+      <Route index element={<HomePage />}/>
+      <Route path="*" element={<NotFoundPage />}/> 
       
     </Route>
 
