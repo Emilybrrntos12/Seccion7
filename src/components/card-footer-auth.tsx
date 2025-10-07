@@ -4,6 +4,7 @@ import { CardFooter } from "../components/ui/card"
 import { useAuthActions } from "../hooks/use-auth-actions"
 import { toast } from "sonner"
 import { Mail } from "lucide-react"
+import { useNavigate } from "react-router"
 
 interface Props{
   type: 'login' | 'register'
@@ -15,11 +16,13 @@ const CardFooterAuth = ({type,loading}:Props) => {
   const isLogin = type === 'login'
 
   const { loginWithGoogle } = useAuthActions();
+  const navigate = useNavigate();
 
   const handleLoginWithGoogle = async () => {
     const result = await loginWithGoogle();
     if (result.success) {
-      console.log("Login successful");
+      // Redirigir a la página Hello Word cuando el usuario use Google
+      navigate("/hello");
     } else {
       console.error("Login failed:", result.error);
       toast.error(`Login failed: ${result.error}`);

@@ -4,6 +4,7 @@ import PublicLayout from "./layout/public.layout"
 import AdminLayout from "./layout/admin.layout"
 import AuthLayout from "./layout/auth.layout"
 import HomePage from "./pages/public/home.page"
+import HelloPage from "./pages/public/hello.page"
 import DashboardPage from "./pages/admin/dashboard.page"
 import ChatPage from "./pages/admin/chat.page"
 import ProfilePage from "./pages/admin/profile.page"
@@ -20,6 +21,7 @@ const App = () => {
     {/** Publicas */}
     <Route element={<PublicLayout />}>
       <Route index element={<HomePage />}/>
+      <Route path="hello" element={<HelloPage />} />
       <Route path="*" element={<NotFoundPage />}/> 
       
     </Route>

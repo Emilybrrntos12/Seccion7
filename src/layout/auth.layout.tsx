@@ -1,14 +1,22 @@
 import { Navigate, Outlet } from "react-router";
-import { useSigninCheck } from "reactfire";
+import { useSigninCheck, useUser } from "reactfire";
 
 const AuthLayout = () => {
   const { status, data: signInCheckResult, hasEmitted } = useSigninCheck();
+  const { data: user } = useUser();
 
   if (status === "loading" || !hasEmitted) {
     return <div>Loading...</div>;
   }
 
   if (status === "success" && signInCheckResult.signedIn) {
+    // Si el usuario inició sesión, detectamos el proveedor principal.
+    const providerId = user?.providerData?.[0]?.providerId || null;
+
+    if (providerId && providerId.includes("google.com")) {
+      return <Navigate to="/hello" />;
+    }
+
     return <Navigate to="/admin" />;
   }
 
