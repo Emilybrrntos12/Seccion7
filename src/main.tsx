@@ -8,6 +8,7 @@ import {FirebaseAppProvider} from "reactfire";
 import { firebaseConfig} from "./config/firebase.ts"
 import FirebaseService from "./config/firebase-service.tsx";
 import { BrowserRouter } from "react-router";
+import RedirectHandler from "./components/redirect-handler";
 
 
 createRoot(document.getElementById('root')!).render(
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
       <FirebaseService>
         <BrowserRouter>
           <App />
+          <RedirectHandler />
         </BrowserRouter>
       </FirebaseService>
     </FirebaseAppProvider>

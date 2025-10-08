@@ -8,6 +8,7 @@ import HelloPage from "./pages/public/hello.page"
 import DashboardPage from "./pages/admin/dashboard.page"
 import ChatPage from "./pages/admin/chat.page"
 import ProfilePage from "./pages/admin/profile.page"
+import NewProductPage from "./pages/admin/new-product.page"
 import LoginPage from "./pages/auth/login.page"
 import RegisterPage from "./pages/auth/register.page"
 import NotFoundPage from "./pages/public/not-foung-page"
@@ -29,8 +30,9 @@ const App = () => {
     {/** Privadas */}
     <Route path="admin" element={<AdminLayout />}>
       <Route index element={<DashboardPage />}/>
-      <Route  path="chat"element={<ChatPage />}/>
+      <Route path="chat" element={<ChatPage />}/>
       <Route path="profile" element={<ProfilePage />}/>
+      <Route path="new-product" element={<NewProductPage />}/>
     </Route>
 
     {/** Auth */}

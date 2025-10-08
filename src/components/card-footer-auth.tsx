@@ -25,7 +25,10 @@ const CardFooterAuth = ({type,loading}:Props) => {
       navigate("/hello");
     } else {
       console.error("Login failed:", result.error);
-      toast.error(`Login failed: ${result.error}`);
+  const err = result.error as { code?: string; message?: string } | null;
+  const code = err?.code;
+  const message = err?.message;
+  toast.error(`Login failed${code ? ` (${code})` : ""}: ${message || "Unknown error"}`);
     }
   };
 

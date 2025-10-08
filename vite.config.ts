@@ -6,7 +6,9 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "./",
+  // Use absolute base so assets are loaded from the site root (avoids relative paths
+  // that break when visiting nested client routes like /auth/login)
+  base: "/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

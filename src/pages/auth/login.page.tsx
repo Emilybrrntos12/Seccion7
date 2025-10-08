@@ -31,8 +31,9 @@ const LoginPage = () => {
       toast.success("Inicio de sesión exitoso");
       navigate("/admin");
     } else {
+      const code = result.error?.code;
       const message = result.error?.message || "Error en el inicio de sesión";
-      toast.error(`Login failed: ${message}`);
+      toast.error(`Login failed${code ? ` (${code})` : ""}: ${message}`);
     }
   };
 

@@ -86,11 +86,24 @@ export const useAuthActions = () => {
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      return {
-        success: true,
-        error: null,
-      };
+      try {
+        // Intentar popup primero (mejor experiencia en escritorio)
+        await signInWithPopup(auth, provider);
+        return {
+          success: true,
+          error: null,
+        };
+      } catch {
+        // Si el popup es bloqueado o no está disponible (móvil), fallback a redirect
+        // No consideramos esto un fallo total: el redirect completará el login cuando el usuario vuelva.
+        await import("firebase/auth").then(({ signInWithRedirect }) =>
+          signInWithRedirect(auth, provider)
+        );
+        return {
+          success: true,
+          error: null,
+        };
+      }
     } catch (error) {
       const authError = error as AuthError;
       return {
