@@ -14,7 +14,7 @@ const AuthLayout = () => {
     const providerId = user?.providerData?.[0]?.providerId || null;
 
     if (providerId && providerId.includes("google.com")) {
-      return <Navigate to="/hello" />;
+      return <Navigate to="/" />;
     }
 
     return <Navigate to="/admin" />;

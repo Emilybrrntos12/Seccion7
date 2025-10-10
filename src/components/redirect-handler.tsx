@@ -14,7 +14,7 @@ const RedirectHandler = () => {
           const providerId = result.user.providerData?.[0]?.providerId || "";
           if (providerId.includes("google.com")) {
             toast.success("Inicio con Google completado");
-            navigate("/hello");
+            navigate("/");
           } else {
             toast.success("Inicio de sesión completado");
             navigate("/admin");

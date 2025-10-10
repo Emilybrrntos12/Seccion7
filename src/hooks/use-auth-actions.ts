@@ -7,7 +7,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import type { AuthError } from "firebase/auth";
+import type { AuthError, User } from "firebase/auth";
 import { useState } from "react";
 
 import { useAuth } from "reactfire";
@@ -55,18 +55,27 @@ export const useAuthActions = () => {
         auth,
         data.email,
         data.password
-        // photoURL: data.photoURL ? URL.createObjectURL(data.photoURL) : null, // Uncomment if photoURL is used
       );
       if (userCredential.user) {
         await updateProfile(userCredential.user, {
           displayName: data.displayName,
         });
+        // Crear documento de perfil en Firestore
+        try {
+          const { getFirestore, doc, setDoc } = await import('firebase/firestore/lite');
+          const firestore = getFirestore();
+          await setDoc(doc(firestore, "users", userCredential.user.uid), {
+            nombre: data.displayName,
+            email: data.email,
+            foto: userCredential.user.photoURL ?? "",
+            telefono: "",
+            aniosNegocio: "",
+            historia: ""
+          });
+        } catch (firestoreError) {
+          console.error("Error creando perfil en Firestore:", firestoreError);
+        }
       }
-
-      // Forzar la recarga del usuario para sincronizar con ReactFire
-      // Se utiliza en videos siguientes
-      //await currentUser.user.reload();
-
       return {
         success: true,
         error: null,
@@ -82,23 +91,24 @@ export const useAuthActions = () => {
     }
   };
 
-  const loginWithGoogle = async (): Promise<AuthActionResult> => {
+  const loginWithGoogle = async (): Promise<AuthActionResult & { user?: User }> => {
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       try {
         // Intentar popup primero (mejor experiencia en escritorio)
-        await signInWithPopup(auth, provider);
+        const userCredential = await signInWithPopup(auth, provider);
         return {
           success: true,
           error: null,
+          user: userCredential.user,
         };
       } catch {
         // Si el popup es bloqueado o no está disponible (móvil), fallback a redirect
-        // No consideramos esto un fallo total: el redirect completará el login cuando el usuario vuelva.
         await import("firebase/auth").then(({ signInWithRedirect }) =>
           signInWithRedirect(auth, provider)
         );
+        // No hay user en redirect inmediato
         return {
           success: true,
           error: null,

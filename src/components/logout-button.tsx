@@ -11,7 +11,7 @@ const LogoutButton = ({ className }: { className?: string }) => {
     const result = await logout();
     if (result.success) {
       toast.success("Sesión cerrada");
-      navigate("/auth/login");
+      navigate("/");
     } else {
       toast.error(`Error cerrando sesión: ${result.error?.message || "Unknown"}`);
     }
