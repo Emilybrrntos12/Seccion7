@@ -12,11 +12,14 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Card,
+  CardContent,
+  useTheme
 } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveIcon from "@mui/icons-material/Save";
-import ImageIcon from "@mui/icons-material/Image";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { toast } from "sonner";
 
 const categorias = ["Mocasines", "Tacones", "Botines", "Botas", "Sandalias"];
@@ -25,6 +28,7 @@ const EditProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const app = useFirebaseApp();
+  const theme = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -81,14 +85,12 @@ const EditProductPage = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validaciones básicas
     const parsedPrice = parseFloat(precio);
     if (isNaN(parsedPrice) || parsedPrice <= 0) {
       toast.error("Precio inválido");
       return;
     }
 
-    // Validar que todas las tallas tengan stock numérico
     const stockValido = tallaDisponible.every(talla => {
       const stock = stockPorTalla[talla];
       return typeof stock === "number" && stock >= 0;
@@ -103,7 +105,7 @@ const EditProductPage = () => {
     try {
       let imageUrl = imagen;
       if (newImageFile) {
-        const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dfqhhvota/image/upload"; // ← sin espacios
+        const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dfqhhvota/image/upload";
         const CLOUDINARY_PRESET = "ecommerce_unsigned";
         const formData = new FormData();
         formData.append("file", newImageFile);
@@ -134,7 +136,7 @@ const EditProductPage = () => {
         stockPorTalla,
       });
 
-      toast.success("Producto actualizado");
+      toast.success("Producto actualizado exitosamente");
       navigate("/admin");
     } catch (err: unknown) {
       console.error(err);
@@ -148,170 +150,276 @@ const EditProductPage = () => {
   if (loading) {
     return (
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="60vh">
-        <CircularProgress />
-        <Typography mt={2}>Cargando producto...</Typography>
+        <CircularProgress size={60} sx={{ mb: 2, color: theme.palette.primary.main }} />
+        <Typography variant="h6" color="text.secondary">
+          Cargando producto...
+        </Typography>
       </Box>
     );
   }
 
   return (
-    <Box maxWidth={500} mx="auto" p={3} bgcolor="#fff" borderRadius={2} boxShadow={2}>
-      <Box display="flex" alignItems="center" mb={2}>
-        <IconButton onClick={() => navigate("/admin/dashboard")} color="primary" size="large">
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h5" fontWeight={700} ml={1}>
-          Editar producto
-        </Typography>
-      </Box>
-      <form onSubmit={handleSave}>
-        <TextField
-          label="Nombre"
-          fullWidth
-          margin="normal"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          required
-        />
-        <TextField
-          label="Descripción"
-          fullWidth
-          margin="normal"
-          multiline
-          rows={3}
-          value={descripcion}
-          onChange={(e) => setDescripcion(e.target.value)}
-          required
-        />
-        <TextField
-          label="Precio"
-          type="number"
-          fullWidth
-          margin="normal"
-          value={precio}
-          onChange={(e) => setPrecio(e.target.value)}
-          required
-          inputProps={{ min: "0.01", step: "0.01" }}
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Categoría</InputLabel>
-          <Select
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value as string)}
-            label="Categoría"
-            required
-          >
-            {categorias.map((cat) => (
-              <MenuItem key={cat} value={cat}>
-                {cat}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Género</InputLabel>
-          <Select
-            value={genero}
-            onChange={(e) => setGenero(e.target.value as string)}
-            input={<OutlinedInput label="Género" />}
-            required
-          >
-            <MenuItem value="Caballeros">Caballeros</MenuItem>
-            <MenuItem value="Damas">Damas</MenuItem>
-            <MenuItem value="Niños">Niños</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Material</InputLabel>
-          <Select
-            value={material}
-            onChange={(e) => setMaterial(e.target.value as string)}
-            input={<OutlinedInput label="Material" />}
-            required
-          >
-            <MenuItem value="Cuero">Cuero</MenuItem>
-            <MenuItem value="Sintético">Sintético</MenuItem>
-            <MenuItem value="Polipiel">Polipiel</MenuItem>
-            <MenuItem value="Charol">Charol</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Tallas disponibles</InputLabel>
-          <Select
-            multiple
-            value={tallaDisponible}
-            onChange={(e) =>
-              setTallaDisponible(
-                typeof e.target.value === "string" ? e.target.value.split(",") : (e.target.value as string[])
-              )
-            }
-            label="Tallas disponibles"
-            renderValue={(selected) => (selected as string[]).join(", ")}
-          >
-            {["22", "23", "24", "25", "26", "27", "28", "29", "30"].map((talla) => (
-              <MenuItem key={talla} value={talla}>
-                {talla}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Stock por talla */}
-        {tallaDisponible.length > 0 && (
-          <Box mt={2}>
-            <Typography variant="subtitle2" fontWeight={600} mb={1}>
-              Stock por talla
-            </Typography>
-            <Box display="flex" flexWrap="wrap" gap={2}>
-              {tallaDisponible.map((talla) => (
-                <TextField
-                  key={talla}
-                  label={`Talla ${talla}`}
-                  type="number"
-                  value={stockPorTalla[talla] ?? ""}
-                  onChange={(e) =>
-                    setStockPorTalla((prev) => ({
-                      ...prev,
-                      [talla]: e.target.value === "" ? 0 : Number(e.target.value),
-                    }))
-                  }
-                  sx={{ width: 100 }}
-                  inputProps={{ min: 0 }}
-                  required
-                />
-              ))}
+    <Box sx={{ p: 3, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+      <Box maxWidth="lg" mx="auto">
+        {/* Header */}
+        <Box sx={{ mb: 3 }}>
+          <Box display="flex" alignItems="center" gap={2} mb={2}>
+            <IconButton 
+              onClick={() => navigate("/admin")} 
+              sx={{ 
+                color: 'white',
+                backgroundColor: theme.palette.primary.main,
+                '&:hover': {
+                  backgroundColor: theme.palette.primary.dark,
+                }
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Box>
+              <Typography variant="h4" fontWeight="bold" color="primary">
+                Editar Producto
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Actualiza la información de tu producto
+              </Typography>
             </Box>
           </Box>
-        )}
-
-        <Box display="flex" alignItems="center" gap={2} mt={2}>
-          <IconButton color="primary" component="label">
-            <ImageIcon />
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => setNewImageFile(e.target.files?.[0] || null)}
-            />
-          </IconButton>
-          {imagen && <img src={imagen} alt="Producto" style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8 }} />}
-          {newImageFile && <Typography variant="body2">{newImageFile.name}</Typography>}
         </Box>
 
-        <Box display="flex" gap={2} mt={4}>
-          <Button type="submit" variant="contained" color="primary" startIcon={<SaveIcon />} disabled={saving}>
-            Guardar
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => navigate("/admin/dashboard")}
-            disabled={saving}
-          >
-            Cancelar
-          </Button>
-        </Box>
-      </form>
+        <form onSubmit={handleSave}>
+          <Box display="flex" gap={3} sx={{ flexDirection: { xs: 'column', md: 'row' } }}>
+            {/* Columna izquierda - Información básica */}
+            <Box sx={{ flex: 2 }}>
+              <Card elevation={2} sx={{ borderRadius: 3, height: '100%' }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                    Información del Producto
+                  </Typography>
+                  
+                  <Box display="flex" flexDirection="column" gap={2}>
+                    <TextField
+                      label="Nombre del producto"
+                      fullWidth
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                      required
+                    />
+                    
+                    <TextField
+                      label="Descripción"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      value={descripcion}
+                      onChange={(e) => setDescripcion(e.target.value)}
+                      required
+                    />
+                    
+                    <Box display="flex" gap={2} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+                      <TextField
+                        label="Precio"
+                        type="number"
+                        fullWidth
+                        value={precio}
+                        onChange={(e) => setPrecio(e.target.value)}
+                        required
+                        inputProps={{ min: "0.01", step: "0.01" }}
+                      />
+
+                      <FormControl fullWidth>
+                        <InputLabel>Categoría</InputLabel>
+                        <Select
+                          value={categoria}
+                          onChange={(e) => setCategoria(e.target.value as string)}
+                          label="Categoría"
+                          required
+                        >
+                          {categorias.map((cat) => (
+                            <MenuItem key={cat} value={cat}>
+                              {cat}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+
+                    <Box display="flex" gap={2} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+                      <FormControl fullWidth>
+                        <InputLabel>Género</InputLabel>
+                        <Select
+                          value={genero}
+                          onChange={(e) => setGenero(e.target.value as string)}
+                          input={<OutlinedInput label="Género" />}
+                          required
+                        >
+                          <MenuItem value="Caballeros">Caballeros</MenuItem>
+                          <MenuItem value="Damas">Damas</MenuItem>
+                          <MenuItem value="Niños">Niños</MenuItem>
+                        </Select>
+                      </FormControl>
+
+                      <FormControl fullWidth>
+                        <InputLabel>Material</InputLabel>
+                        <Select
+                          value={material}
+                          onChange={(e) => setMaterial(e.target.value as string)}
+                          input={<OutlinedInput label="Material" />}
+                          required
+                        >
+                          <MenuItem value="Cuero">Cuero</MenuItem>
+                          <MenuItem value="Sintético">Sintético</MenuItem>
+                          <MenuItem value="Polipiel">Polipiel</MenuItem>
+                          <MenuItem value="Charol">Charol</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+
+            {/* Columna derecha - Inventario e Imagen */}
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+              {/* Sección de Inventario */}
+              <Card elevation={2} sx={{ borderRadius: 3 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                    Inventario
+                  </Typography>
+                  
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel>Tallas disponibles</InputLabel>
+                    <Select
+                      multiple
+                      value={tallaDisponible}
+                      onChange={(e) =>
+                        setTallaDisponible(
+                          typeof e.target.value === "string" ? e.target.value.split(",") : (e.target.value as string[])
+                        )
+                      }
+                      label="Tallas disponibles"
+                      renderValue={(selected) => (selected as string[]).join(", ")}
+                    >
+                      {["22", "23", "24", "25", "26", "27", "28", "29", "30"].map((talla) => (
+                        <MenuItem key={talla} value={talla}>
+                          {talla}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* Stock por talla */}
+                  {tallaDisponible.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                        Stock por talla
+                      </Typography>
+                      <Box display="flex" flexDirection="column" gap={1}>
+                        {tallaDisponible.map((talla) => (
+                          <TextField
+                            key={talla}
+                            label={`Talla ${talla}`}
+                            type="number"
+                            value={stockPorTalla[talla] ?? ""}
+                            onChange={(e) =>
+                              setStockPorTalla((prev) => ({
+                                ...prev,
+                                [talla]: e.target.value === "" ? 0 : Number(e.target.value),
+                              }))
+                            }
+                            fullWidth
+                            size="small"
+                            inputProps={{ min: 0 }}
+                            required
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Sección de Imagen */}
+              <Card elevation={2} sx={{ borderRadius: 3 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                    Imagen del Producto
+                  </Typography>
+                  
+                  <Box display="flex" flexDirection="column" gap={2}>
+                    {imagen && (
+                      <Box display="flex" justifyContent="center">
+                        <img 
+                          src={imagen} 
+                          alt="Vista previa" 
+                          style={{ 
+                            width: '100%', 
+                            maxWidth: 200,
+                            height: 200, 
+                            objectFit: "cover", 
+                            borderRadius: 8,
+                            border: `2px solid ${theme.palette.divider}`
+                          }} 
+                        />
+                      </Box>
+                    )}
+                    
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      startIcon={<CloudUploadIcon />}
+                      fullWidth
+                      sx={{
+                        borderStyle: 'dashed',
+                        borderWidth: 2,
+                        py: 1.5
+                      }}
+                    >
+                      {imagen ? 'Cambiar Imagen' : 'Subir Imagen'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={(e) => setNewImageFile(e.target.files?.[0] || null)}
+                      />
+                    </Button>
+                    
+                    {newImageFile && (
+                      <Typography variant="body2" color="primary" fontWeight="medium" textAlign="center">
+                        {newImageFile.name}
+                      </Typography>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
+
+          {/* Botones de acción */}
+          <Box display="flex" gap={2} justifyContent="flex-end" mt={3}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate("/admin")}
+              disabled={saving}
+              sx={{ px: 4 }}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              type="submit" 
+              variant="contained" 
+              color="primary" 
+              startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
+              disabled={saving}
+              sx={{ px: 4 }}
+            >
+              {saving ? "Guardando..." : "Guardar Cambios"}
+            </Button>
+          </Box>
+        </form>
+      </Box>
     </Box>
   );
 };
