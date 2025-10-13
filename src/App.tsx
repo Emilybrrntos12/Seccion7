@@ -16,6 +16,7 @@ import CartPage from "./pages/public/cart.page"
 import CheckoutPage from "./pages/public/checkout.page"
 import EditProfilePage from "./pages/admin/edit-profile.page"
 import OrderPage from "./pages/admin/order.page"
+import FavoritosPage from "./pages/public/favoritos.page"
 
 const App = () => {
   return (
@@ -30,7 +31,7 @@ const App = () => {
   <Route path="producto/:id" element={<ProductDetailPage />} />
   <Route path="cart" element={<CartPage />} />
   <Route path="checkout" element={<CheckoutPage />} />
-  <Route path="checkout" element={<CheckoutPage />} />
+  <Route path="favoritos" element={<FavoritosPage />} />
     </Route>
 
     {/** Privadas */}
