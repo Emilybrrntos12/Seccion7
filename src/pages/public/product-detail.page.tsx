@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useFirebaseApp, useSigninCheck } from "reactfire";
 import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore/lite";
 import { Card, CardContent, CardMedia, Typography, Box, Chip, Button, Divider, Select, MenuItem, FormControl, InputLabel, TextField } from "@mui/material";
+import { ProductReviews } from "../../components/ui/product-reviews";
 
 type Product = {
   id: string;
@@ -128,7 +129,7 @@ const ProductDetailPage = () => {
   if (!product) return <div>Producto no encontrado</div>;
 
   return (
-    <Box minHeight="100vh" bgcolor="#f5f5f5" display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={6}>
+  <Box minHeight="100vh" bgcolor="#f5f5f5" display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={6}>
       <Button variant="contained" color="primary" onClick={() => navigate(-1)} sx={{ mb: 3, alignSelf: 'flex-start' }}>Volver</Button>
       <Card sx={{ maxWidth: 900, width: '100%', boxShadow: 4, borderRadius: 4, p: 2 }}>
         <Box display="flex" flexWrap="wrap" gap={4}>
@@ -263,6 +264,15 @@ const ProductDetailPage = () => {
               <Typography variant="body2" color="text.secondary" mt={2}>
                 Stock disponible: <strong>{product.stock}</strong>
               </Typography>
+               {/* Sección de opiniones/reseñas */}
+               <ProductReviews
+                 productId={product.id}
+                 user={signInCheckResult?.signedIn ? {
+                   nombre: signInCheckResult.user.displayName || signInCheckResult.user.email || "",
+                   uid: signInCheckResult.user.uid,
+                   email: signInCheckResult.user.email || ""
+                 } : undefined}
+               />
               </Box>
             </CardContent>
           </Box>
