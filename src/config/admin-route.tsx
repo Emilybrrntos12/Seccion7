@@ -12,27 +12,25 @@ const AdminRoute: React.FC = () => {
 
   React.useEffect(() => {
     const checkAdmin = async () => {
-      console.log("[AdminRoute] UID actual:", user?.uid);
       if (user?.uid) {
-        // firestore es del SDK completo, así que doc() funciona correctamente
         const adminDocRef = doc(firestore, "admins", user.uid);
         const adminDoc = await getDoc(adminDocRef);
-        console.log("[AdminRoute] Documento admin existe:", adminDoc.exists());
         setIsAdmin(adminDoc.exists());
-        if (!adminDoc.exists()) setShowDenied(true);
+        setShowDenied(!adminDoc.exists());
       } else {
         setIsAdmin(false);
-        setShowDenied(true);
+        setShowDenied(false); // No mostrar acceso denegado hasta que se verifique
       }
     };
-    if (signinCheckResult && signinCheckResult.signedIn) {
+    if (status === "success" && hasEmitted && signinCheckResult && signinCheckResult.signedIn) {
       checkAdmin();
-    } else {
-      setIsAdmin(false);
-      setShowDenied(true);
     }
-    console.log("[AdminRoute] Estado signinCheckResult:", signinCheckResult);
-  }, [firestore, user, signinCheckResult]);
+    // Si no está autenticado, no mostrar nada
+    if (status === "success" && hasEmitted && signinCheckResult && !signinCheckResult.signedIn) {
+      setIsAdmin(false);
+      setShowDenied(false);
+    }
+  }, [firestore, user, status, hasEmitted, signinCheckResult]);
 
   if (status === "loading" || !hasEmitted || isAdmin === null) {
     return <div>Loading...</div>;

@@ -27,7 +27,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useAuthActions } from '../../hooks/use-auth-actions';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, getDoc, doc } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 
@@ -67,9 +67,16 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
     const fetchOrders = async () => {
       if (!user?.uid) return;
       const firestore = getFirestore(getApp());
+      // Verificar si el usuario es admin
+      const adminDoc = await getDoc(doc(firestore, "admins", user.uid));
+      if (!adminDoc.exists()) {
+        setOrders([]);
+        setPendingOrders(0);
+        return;
+      }
+      // Si es admin, obtener todos los pedidos
       const ordersRef = collection(firestore, 'orders');
-      const q = query(ordersRef, where('id_usuario', '==', user.uid));
-      const snapshot = await getDocs(q);
+      const snapshot = await getDocs(ordersRef);
       const pedidos: Pedido[] = snapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -88,7 +95,6 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
         };
       });
       setOrders(pedidos);
-      
       const pending = pedidos.filter(order => 
         order.estado?.toLowerCase() === 'pendiente' || 
         order.estado?.toLowerCase() === 'procesando'

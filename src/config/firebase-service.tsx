@@ -12,7 +12,10 @@ const FirebaseService = ({children}: Props) => {
   const app = useFirebaseApp();
 
   const firestore = getFirestore(app);
-  const auth = getAuth(app);
+    const auth = getAuth(app);
+    import('firebase/auth').then(({ browserLocalPersistence, setPersistence }) => {
+        setPersistence(auth, browserLocalPersistence).catch(console.error);
+    });
   const storage = getStorage(app);
 
     return (
