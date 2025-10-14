@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getFirestore, collection, getDocs, Timestamp } from "firebase/firestore";
 import { getApp } from "firebase/app";
 import { Box, Typography, Avatar, Paper, CircularProgress } from '@mui/material';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 interface User {
   email: string;
@@ -12,7 +11,7 @@ interface User {
   fechaRegistro?: Timestamp;
 }
 
-const UsersPage = () => {
+const UsersList = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,12 +39,9 @@ const UsersPage = () => {
 
   return (
     <Box sx={{ maxWidth: 700, margin: '0 auto', p: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <PeopleAltIcon color="primary" sx={{ fontSize: 32 }} />
-        <Typography variant="h5" fontWeight="bold" color="primary.main">
-          Usuarios Registrados
-        </Typography>
-      </Box>
+      <Typography variant="h6" fontWeight="bold" color="primary.main" sx={{ mb: 2 }}>
+        Usuarios Registrados
+      </Typography>
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
           <CircularProgress />
@@ -72,4 +68,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default UsersList;

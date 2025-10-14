@@ -21,6 +21,7 @@ import FavoritosPage from "./pages/public/favoritos.page"
 import { UserProfile } from "./components/ui/user-profile"
 import { Nosotros as NosotrosPage } from "./pages/public/nosotros.page"
 import { Contacto } from "./pages/public/contacto.page"
+import UserList from "./components/sidebar/components/UsersList"
 
 const App = () => {
   return (
@@ -50,6 +51,7 @@ const App = () => {
       <Route path="edit-product/:id" element={<EditProductPage />}/>
       <Route path="orders" element={<OrderPage />}/>
       <Route path="mensajes" element={<MensajesAdmin />} />
+      <Route path="users" element={<UserList />} />
     </Route>
 
     {/** Auth */}

@@ -11,9 +11,9 @@ type Product = {
 };
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import SidebarProfile from '../../components/ui/sidebar-profile';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import SidebarProfile from '../../components/sidebar/sidebar-profile';
+
+// import MenuIcon from '@mui/icons-material/Menu';
 import { Button, Typography } from "@mui/material";
 
 
@@ -57,9 +57,9 @@ const DashboardPage = () => {
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <SidebarProfile open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <Box sx={{ flex: 1 }}>
-        <IconButton onClick={() => setSidebarOpen(true)} sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1201, bgcolor: '#fff', boxShadow: 2 }}>
+        {/* <IconButton onClick={() => setSidebarOpen(true)} sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1201, bgcolor: '#fff', boxShadow: 2 }}>
           <MenuIcon fontSize="large" color="primary" />
-        </IconButton>
+        </IconButton> */}
         <Container maxWidth="md" sx={{ mt: 4 }}>
           <Typography variant="h4" gutterBottom>
             Bienvenido, {user?.displayName || "Invitado"}!
