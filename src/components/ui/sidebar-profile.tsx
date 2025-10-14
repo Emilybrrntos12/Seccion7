@@ -16,13 +16,12 @@ import {
   alpha
 } from '@mui/material';
 import { useUser } from 'reactfire';
-import { 
-  Logout, 
-  ShoppingBag, 
-  Edit, 
-  Dashboard,
-  History
-} from '@mui/icons-material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import EditIcon from '@mui/icons-material/Edit';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import HistoryIcon from '@mui/icons-material/History';
+import ForumIcon from '@mui/icons-material/Forum';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useAuthActions } from '../../hooks/use-auth-actions';
@@ -282,7 +281,7 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>
-                  <Dashboard color="primary" />
+                  <DashboardIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText 
                   primary="Dashboard" 
@@ -319,7 +318,7 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
                       } 
                     }}
                   >
-                    <ShoppingBag color="primary" />
+                    <ShoppingBagIcon color="primary" />
                   </Badge>
                 </ListItemIcon>
                 <ListItemText 
@@ -346,7 +345,7 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>
-                  <History color="primary" />
+                  <HistoryIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText 
                   primary="Historial" 
@@ -372,10 +371,36 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>
-                  <Edit color="primary" />
+                  <EditIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText 
                   primary="Editar Perfil" 
+                  primaryTypographyProps={{ 
+                    fontSize: '0.95rem',
+                    color: 'text.primary'
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem disablePadding sx={{ mb: 1 }}>
+              <ListItemButton 
+                onClick={() => handleNavigation('/admin/mensajes')}
+                sx={{
+                  mx: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    transform: 'translateX(4px)',
+                  },
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <ForumIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText 
+                  primary="Mensajes" 
                   primaryTypographyProps={{ 
                     fontSize: '0.95rem',
                     color: 'text.primary'
@@ -403,7 +428,7 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <Logout sx={{ color: theme.palette.error.main }} />
+              <LogoutIcon sx={{ color: theme.palette.error.main }} />
             </ListItemIcon>
             <ListItemText 
               primary="Cerrar Sesión" 

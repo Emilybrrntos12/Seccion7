@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router"
 import RootLayout from "./layout/root.layout"
 import PublicLayout from "./layout/public.layout"
-import AdminLayout from "./layout/admin.layout"
+import AdminRoute from "./config/admin-route"
 import AuthLayout from "./layout/auth.layout"
 import HomePage from "./pages/public/home.page"
 import HelloPage from "./pages/public/hello.page"
@@ -16,8 +16,11 @@ import CartPage from "./pages/public/cart.page"
 import CheckoutPage from "./pages/public/checkout.page"
 import EditProfilePage from "./pages/admin/edit-profile.page"
 import OrderPage from "./pages/admin/order.page"
+import { MensajesAdmin } from "./pages/admin/mensajes.page"
 import FavoritosPage from "./pages/public/favoritos.page"
-import {UserProfile} from "./components/ui/user-profile"
+import { UserProfile } from "./components/ui/user-profile"
+import { Nosotros as NosotrosPage } from "./pages/public/nosotros.page"
+import { Contacto } from "./pages/public/contacto.page"
 
 const App = () => {
   return (
@@ -34,16 +37,19 @@ const App = () => {
   <Route path="checkout" element={<CheckoutPage />} />
   <Route path="favoritos" element={<FavoritosPage />} />
   <Route path="perfil" element={<UserProfile />} />
+  <Route path="/nosotros" element={<NosotrosPage />} />
+  <Route path="/contacto" element={<Contacto />} />
     </Route>
 
     {/** Privadas */}
-    <Route path="admin" element={<AdminLayout />}>
+    <Route path="admin" element={<AdminRoute />}>
       <Route index element={<DashboardPage />}/>
       <Route path="chat" element={<ChatPage />}/>
       <Route path="edit-profile" element={<EditProfilePage />}/>
       <Route path="new-product" element={<NewProductPage />}/>
       <Route path="edit-product/:id" element={<EditProductPage />}/>
       <Route path="orders" element={<OrderPage />}/>
+      <Route path="mensajes" element={<MensajesAdmin />} />
     </Route>
 
     {/** Auth */}
