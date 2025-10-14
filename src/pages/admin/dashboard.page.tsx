@@ -55,7 +55,11 @@ const DashboardPage = () => {
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
-      <SidebarProfile open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <SidebarProfile 
+        open={sidebarOpen} 
+        onClose={() => setSidebarOpen(false)} 
+        onOpen={() => setSidebarOpen(true)} 
+      />
       <Box sx={{ flex: 1 }}>
         {/* <IconButton onClick={() => setSidebarOpen(true)} sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1201, bgcolor: '#fff', boxShadow: 2 }}>
           <MenuIcon fontSize="large" color="primary" />

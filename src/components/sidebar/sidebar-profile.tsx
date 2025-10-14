@@ -40,7 +40,7 @@ export type Pedido = {
   estado: string;
 };
 
-const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void }) => {
+const SidebarProfile = ({ open, onClose, onOpen }: { open: boolean, onClose: () => void, onOpen: () => void }) => {
   const { data: user } = useUser();
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [pendingOrders, setPendingOrders] = useState(0);
@@ -124,7 +124,7 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
       {/* Botón para abrir el sidebar */}
       {!open && (
         <IconButton
-          onClick={onClose}
+          onClick={onOpen}
           sx={{
             position: 'fixed',
             left: 16,
