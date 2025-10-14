@@ -40,10 +40,20 @@ export type Pedido = {
   estado: string;
 };
 
+interface UserProfile {
+  nombre?: string;
+  email?: string;
+  foto?: string;
+  telefono?: string;
+  aniosNegocio?: string;
+  historia?: string;
+}
+
 const SidebarProfile = ({ open, onClose, onOpen }: { open: boolean, onClose: () => void, onOpen: () => void }) => {
   const { data: user } = useUser();
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const navigate = useNavigate();
   const { logout } = useAuthActions();
   const theme = useTheme();
@@ -89,6 +99,19 @@ const SidebarProfile = ({ open, onClose, onOpen }: { open: boolean, onClose: () 
     fetchOrders();
   }, [user]);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.uid) return;
+      const firestore = getFirestore(getApp());
+      const userRef = doc(firestore, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        setProfile(snap.data() as UserProfile);
+      }
+    };
+    fetchProfile();
+  }, [user]);
+
   const handleNavigation = (path: string) => {
     navigate(path);
     onClose();
@@ -114,9 +137,10 @@ const SidebarProfile = ({ open, onClose, onOpen }: { open: boolean, onClose: () 
   };
 
   const safeUser = {
-    displayName: user?.displayName ?? undefined,
-    email: user?.email ?? undefined,
-    photoURL: user?.photoURL ?? undefined,
+    displayName: profile?.nombre ?? user?.displayName ?? undefined,
+    email: profile?.email ?? user?.email ?? undefined,
+    photoURL: profile?.foto ?? user?.photoURL ?? undefined,
+    telefono: profile?.telefono ?? undefined,
   };
 
   return (

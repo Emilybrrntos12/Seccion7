@@ -140,7 +140,7 @@ const EditProfilePage = () => {
   return (
     <Box maxWidth={400} mx="auto" p={3} bgcolor="#fff" borderRadius={2} boxShadow={2}>
       <Box display="flex" alignItems="center" mb={2}>
-        <IconButton onClick={() => navigate("/admin/profile")} color="primary" size="large">
+        <IconButton onClick={() => navigate("/admin")} color="primary" size="large">
           <ArrowBackIcon />
         </IconButton>
         <Typography variant="h5" fontWeight={700} ml={1}>Editar perfil</Typography>

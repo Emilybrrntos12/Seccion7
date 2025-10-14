@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "reactfire";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getApp } from "firebase/app";
 import { useState, useEffect } from "react";
 
 type Product = {
@@ -21,6 +23,20 @@ const DashboardPage = () => {
   const { data: user } = useUser();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<{ nombre?: string; email?: string } | null>(null);
+  // Obtener perfil del usuario desde Firestore
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.uid) return;
+      const firestore = getFirestore(getApp());
+      const userRef = doc(firestore, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        setProfile(snap.data() as { nombre?: string; email?: string });
+      }
+    };
+    fetchProfile();
+  }, [user]);
 
   // Obtener productos creados por el usuario actual
   useEffect(() => {
@@ -66,7 +82,7 @@ const DashboardPage = () => {
         </IconButton> */}
         <Container maxWidth="md" sx={{ mt: 4 }}>
           <Typography variant="h4" gutterBottom>
-            Bienvenido, {user?.displayName || "Invitado"}!
+            Bienvenido, {profile?.nombre || user?.displayName || profile?.email || user?.email || "Invitado"}!
           </Typography>
           <Box display="flex" justifyContent="center" mt={2}>
             <Button
