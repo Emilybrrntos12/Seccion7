@@ -30,6 +30,8 @@ import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, getDoc, doc } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
+import UsersStats from './users-stats';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 export type PedidoCartItem = {
   id_producto: string;
@@ -236,6 +238,8 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
           </Box>
         </Box>
 
+        {/* Usuarios alcanzados */}
+        <UsersStats />
         {/* Estadísticas rápidas */}
         <Box 
           sx={{ 
@@ -407,6 +411,33 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
                 </ListItemIcon>
                 <ListItemText 
                   primary="Mensajes" 
+                  primaryTypographyProps={{ 
+                    fontSize: '0.95rem',
+                    color: 'text.primary'
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            {/* Nuevo ítem para Usuarios Registrados */}
+            <ListItem disablePadding sx={{ mb: 1 }}>
+              <ListItemButton 
+                onClick={() => handleNavigation('/admin/users')}
+                sx={{
+                  mx: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    transform: 'translateX(4px)',
+                  },
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <PeopleAltIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText 
+                  primary="Usuarios Registrados" 
                   primaryTypographyProps={{ 
                     fontSize: '0.95rem',
                     color: 'text.primary'

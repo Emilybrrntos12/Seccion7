@@ -3,6 +3,7 @@ import { getFirestore, collection, getDocs, Timestamp, updateDoc, doc } from "fi
 import { getApp } from "firebase/app";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 
 // Tipos
 export type PedidoCartItem = {
@@ -30,6 +31,7 @@ export type Pedido = {
 };
 
 const OrderPage = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
@@ -154,7 +156,6 @@ useEffect(() => {
     );
   }
 
-  // ...existing code...
   const estados = ["Pendiente", "En preparación", "Enviado", "Entregado"];
 
   const handleEstadoChange = async (orderId: string, newEstado: string) => {
@@ -246,6 +247,25 @@ useEffect(() => {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+      <button
+        onClick={() => navigate('/admin')}
+        style={{
+          marginBottom: '20px',
+          padding: '8px 18px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '15px',
+          fontWeight: 'bold',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
+        }}
+        onMouseOver={e => e.currentTarget.style.backgroundColor = '#0056b3'}
+        onMouseOut={e => e.currentTarget.style.backgroundColor = '#007bff'}
+      >
+        ← Regresar
+      </button>
       <div style={{ marginBottom: '30px' }}>
         <h1>Órdenes Realizadas</h1>
         <p>{filteredOrders.length} {filteredOrders.length === 1 ? 'orden encontrada' : 'órdenes encontradas'}</p>
