@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getFirestore, collection, getDocs, Timestamp, updateDoc, doc } from "firebase/firestore";
 import { getApp } from "firebase/app";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 // Tipos
 export type PedidoCartItem = {
@@ -167,6 +169,81 @@ useEffect(() => {
     }
   };
 
+  const downloadOrderPDF = (order: Pedido) => {
+    const doc = new jsPDF();
+    
+    // Título
+    doc.setFontSize(20);
+    doc.text("Orden de Compra", 105, 20, { align: "center" });
+    
+    // Información de la orden
+    doc.setFontSize(12);
+    doc.text(`Número de Orden: #${order.id.slice(-8).toUpperCase()}`, 20, 35);
+    doc.text(`Fecha: ${formatDate(order.fecha)}`, 20, 42);
+    doc.text(`Estado: ${order.estado}`, 20, 49);
+    
+    // Línea separadora
+    doc.line(20, 55, 190, 55);
+    
+    // Información del cliente
+    doc.setFontSize(14);
+    doc.text("Información del Cliente", 20, 65);
+    doc.setFontSize(10);
+    doc.text(`Nombre: ${order.nombre}`, 20, 72);
+    doc.text(`Email: ${order.email}`, 20, 78);
+    doc.text(`Teléfono: ${order.telefono}`, 20, 84);
+    doc.text(`Dirección: ${order.direccion}`, 20, 90);
+    
+    // Información del pago
+    doc.setFontSize(14);
+    doc.text("Información del Pago", 20, 102);
+    doc.setFontSize(10);
+    doc.text(`Método de Pago: ${order.metodoPago}`, 20, 109);
+    if (order.notas) {
+      doc.text(`Notas: ${order.notas}`, 20, 115);
+    }
+    
+    // Tabla de productos
+    const tableData = order.cartItems.map((item) => [
+      item.nombre,
+      item.talla_seleccionada,
+      item.cantidad.toString(),
+      `$${item.precio.toFixed(2)}`,
+      `$${(item.precio * item.cantidad).toFixed(2)}`
+    ]);
+    
+    autoTable(doc, {
+      head: [["Producto", "Talla", "Cantidad", "Precio Unit.", "Subtotal"]],
+      body: tableData,
+      startY: order.notas ? 122 : 116,
+      theme: "striped",
+      headStyles: { fillColor: [66, 139, 202] },
+      styles: { fontSize: 10 },
+      columnStyles: {
+        0: { cellWidth: 60 },
+        1: { cellWidth: 25, halign: "center" },
+        2: { cellWidth: 25, halign: "center" },
+        3: { cellWidth: 35, halign: "right" },
+        4: { cellWidth: 35, halign: "right" }
+      }
+    });
+    
+    // Total
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const finalY = (doc as any).lastAutoTable.finalY || 180;
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.text(`Total: $${order.total.toFixed(2)}`, 190, finalY + 10, { align: "right" });
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setFont(undefined, "normal");
+    doc.text("Gracias por su compra", 105, finalY + 25, { align: "center" });
+    
+    // Descargar el PDF
+    doc.save(`Orden_${order.id.slice(-8).toUpperCase()}.pdf`);
+  };
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
       <div style={{ marginBottom: '30px' }}>
@@ -251,10 +328,29 @@ useEffect(() => {
                     </span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <strong style={{ fontSize: '18px' }}>
                     ${order.total?.toFixed(2) || '0.00'}
                   </strong>
+                  <button
+                    onClick={() => downloadOrderPDF(order)}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#218838'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                  >
+                    📄 Descargar PDF
+                  </button>
                 </div>
               </div>
 
