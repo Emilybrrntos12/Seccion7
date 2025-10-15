@@ -51,7 +51,7 @@ const CheckoutPage = () => {
     (async () => {
       try {
         // Importar Firestore
-        const { getFirestore, collection, addDoc, Timestamp, doc, getDoc, updateDoc } = await import('firebase/firestore');
+  const { getFirestore, collection, addDoc, Timestamp, doc, getDoc, updateDoc, deleteDoc } = await import('firebase/firestore');
         const app = await import('firebase/app');
         const firestore = getFirestore(app.getApp());
 
@@ -138,7 +138,15 @@ const CheckoutPage = () => {
           }
         }
 
-        setConfirmado(true);
+            // Limpiar el carrito del usuario en Firestore
+            for (const item of cartItems) {
+              try {
+                await deleteDoc(doc(firestore, 'cart', item.id));
+              } catch (err) {
+                console.error('Error al eliminar item del carrito:', err);
+              }
+            }
+            setConfirmado(true);
       } catch (error: unknown) {
         console.error('Error detallado:', {
           mensaje: error instanceof Error ? error.message : 'Error desconocido',
@@ -262,6 +270,12 @@ const CheckoutPage = () => {
           <CardContent>
             <Typography variant="h6" color="success.main">¡Pedido realizado con éxito!</Typography>
             <Typography>Te contactaremos pronto para coordinar la entrega.</Typography>
+              <Button variant="contained" color="primary" sx={{ mt: 2, mr: 2 }} onClick={() => window.location.href = "/"}>
+                Ir al inicio
+              </Button>
+              <Button variant="outlined" color="secondary" sx={{ mt: 2 }} onClick={() => window.location.href = "/"}>
+                Regresar
+              </Button>
           </CardContent>
         </Card>
       )}
