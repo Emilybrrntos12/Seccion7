@@ -38,8 +38,13 @@ const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => (
       />
       <SidebarMenuItem
         icon={<ForumIcon color="primary" />}
-        text="Mensajes"
+        text="Mensajes (Admin)"
         onClick={() => onNavigate('/admin/mensajes')}
+      />
+      <SidebarMenuItem
+        icon={<ForumIcon color="primary" />}
+        text="Chat"
+        onClick={() => onNavigate('/chat')}
       />
       <SidebarMenuItem
         icon={<PeopleAltIcon color="primary" />}

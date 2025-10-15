@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore/lite";
 import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
-import { useFirebaseApp } from "reactfire";
+import { getFirestore, collection, getDocs, query, where, addDoc, doc, updateDoc } from "firebase/firestore/lite";
+import { useFirebaseApp, useUser } from "reactfire";
 
 interface ChatMessage {
   author: "user" | "admin";
@@ -12,8 +12,9 @@ interface ChatMessage {
   read?: boolean;
 }
 
-export const MensajesAdmin: React.FC = () => {
+export const ChatUsuario: React.FC = () => {
   const navigate = useNavigate();
+  const { data: user } = useUser();
   const [chatId, setChatId] = useState<string>("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
@@ -21,21 +22,36 @@ export const MensajesAdmin: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Buscar la primera conversación (puedes adaptar para seleccionar por usuario)
+    // Buscar o crear la conversación del usuario actual
     const fetchChat = async () => {
       setLoading(true);
       const firestore = getFirestore(app);
-      const snap = await getDocs(collection(firestore, "conversations"));
-      if (snap.docs.length > 0) {
-        const doc = snap.docs[0];
-        setChatId(doc.id);
-        const data = doc.data();
+      // Buscar conversación del usuario con query filtrado
+      const q = query(collection(firestore, "conversations"), where("userId", "==", user?.uid));
+      const snap = await getDocs(q);
+      
+      if (!snap.empty) {
+        // Ya existe una conversación
+        const userConv = snap.docs[0];
+        setChatId(userConv.id);
+        const data = userConv.data();
         setChatMessages(Array.isArray(data.messages) ? data.messages : []);
+      } else {
+        // Crear nueva conversación
+        const newConv = await addDoc(collection(firestore, "conversations"), {
+          userId: user?.uid,
+          userEmail: user?.email || "",
+          messages: [],
+          createdAt: Timestamp.now(),
+          lastMessageAt: Timestamp.now(),
+        });
+        setChatId(newConv.id);
+        setChatMessages([]);
       }
       setLoading(false);
     };
-    fetchChat();
-  }, [app]);
+    if (user?.uid) fetchChat();
+  }, [app, user]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#fff', padding: '32px 0' }}>
@@ -46,7 +62,7 @@ export const MensajesAdmin: React.FC = () => {
         ← Regresar
       </button>
       <div style={{ maxWidth: 500, margin: '80px auto 0 auto', background: '#fff', borderRadius: 12, boxShadow: '0 2px 12px #0001', padding: 32 }}>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, color: '#1976d2', textAlign: 'center' }}>Chat de Mensaje</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, color: '#1976d2', textAlign: 'center' }}>Chat con Admin</h2>
         {loading ? (
           <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>Cargando chat...</div>
         ) : chatMessages.length === 0 ? (
@@ -55,15 +71,15 @@ export const MensajesAdmin: React.FC = () => {
           <div style={{ marginBottom: 24 }}>
             {chatMessages.map((msg, idx) => (
               <div key={idx} style={{
-                background: msg.author === "admin" ? '#e3f2fd' : '#f5f5f5',
+                background: msg.author === "user" ? '#e3f2fd' : '#f5f5f5',
                 color: '#333',
                 borderRadius: 8,
                 padding: '10px 16px',
                 marginBottom: 10,
-                textAlign: msg.author === "admin" ? 'right' : 'left'
+                textAlign: msg.author === "user" ? 'right' : 'left'
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-                  {msg.author === "admin" ? "Admin" : "Usuario"}
+                  {msg.author === "admin" ? "Admin" : "Tú"}
                 </div>
                 <div>{msg.text}</div>
                 <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
@@ -88,17 +104,17 @@ export const MensajesAdmin: React.FC = () => {
           <form onSubmit={async e => {
             e.preventDefault();
             if (!newMessage.trim()) return;
-            const { getFirestore, doc, updateDoc } = await import("firebase/firestore/lite");
             const firestore = getFirestore(app);
             const ref = doc(firestore, "conversations", chatId);
             const nuevoMsg: ChatMessage = {
-              author: "admin",
+              author: "user",
               text: newMessage,
               timestamp: Timestamp.now(),
               read: false
             };
             await updateDoc(ref, {
-              messages: [...chatMessages, nuevoMsg]
+              messages: [...chatMessages, nuevoMsg],
+              lastMessageAt: Timestamp.now()
             });
             setChatMessages(prev => [...prev, nuevoMsg]);
             setNewMessage("");
@@ -106,7 +122,7 @@ export const MensajesAdmin: React.FC = () => {
             <TextField
               value={newMessage}
               onChange={e => setNewMessage(e.target.value)}
-              placeholder="Escribe tu respuesta..."
+              placeholder="Escribe tu mensaje..."
               fullWidth
               size="small"
             />

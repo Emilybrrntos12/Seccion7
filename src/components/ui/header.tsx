@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Box, IconButton, InputBase, Avatar, Button, Badge } from "@mui/material";
 import { Menu, MenuItem } from "@mui/material";
 import { ShoppingCart, Favorite, Person } from "@mui/icons-material";
+import ForumIcon from '@mui/icons-material/Forum';
 import { useUser } from "reactfire";
 import { useNavigate } from "react-router-dom";
 import { useAuthActions } from '@/hooks/use-auth-actions';
@@ -99,6 +100,9 @@ const Header: React.FC = () => {
 
         {/* Íconos */}
         <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 }, minWidth: 120 }}>
+        <IconButton color="primary" onClick={() => navigate("/chat")}> 
+          <ForumIcon />
+        </IconButton>
           <IconButton color="primary" onClick={() => navigate("/favoritos")}> 
             <Favorite />
           </IconButton>

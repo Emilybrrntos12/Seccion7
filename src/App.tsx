@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router"
+import { ChatUsuario } from "./pages/public/chat.page";
 import RootLayout from "./layout/root.layout"
 import PublicLayout from "./layout/public.layout"
 import AdminRoute from "./config/admin-route"
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="perfil" element={<UserProfile />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="chat" element={<ChatUsuario />} />
         </Route>
 
         {/* Privadas */}
