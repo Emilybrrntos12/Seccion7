@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore/lite";
 import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "firebase/firestore/lite";
 import { useFirebaseApp } from "reactfire";
 
 interface ChatMessage {
@@ -27,10 +27,23 @@ export const MensajesAdmin: React.FC = () => {
       const firestore = getFirestore(app);
       const snap = await getDocs(collection(firestore, "conversations"));
       if (snap.docs.length > 0) {
-        const doc = snap.docs[0];
-        setChatId(doc.id);
-        const data = doc.data();
-        setChatMessages(Array.isArray(data.messages) ? data.messages : []);
+        const convDoc = snap.docs[0];
+        setChatId(convDoc.id);
+        const data = convDoc.data();
+        const messages = Array.isArray(data.messages) ? data.messages : [];
+        setChatMessages(messages);
+        
+        // Marcar mensajes del usuario como leídos
+        const hasUnreadUserMessages = messages.some((msg: ChatMessage) => msg.author === 'user' && !msg.read);
+        if (hasUnreadUserMessages) {
+          const updatedMessages = messages.map((msg: ChatMessage) => 
+            msg.author === 'user' ? { ...msg, read: true } : msg
+          );
+          await updateDoc(doc(firestore, "conversations", convDoc.id), {
+            messages: updatedMessages
+          });
+          setChatMessages(updatedMessages);
+        }
       }
       setLoading(false);
     };

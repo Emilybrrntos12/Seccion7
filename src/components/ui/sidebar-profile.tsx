@@ -32,6 +32,7 @@ import { Timestamp } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import UsersStats from './users-stats';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { useUnreadMessages } from '@/hooks/use-unread-messages';
 
 export type PedidoCartItem = {
   id_producto: string;
@@ -61,9 +62,11 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
   const { data: user } = useUser();
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuthActions();
   const theme = useTheme();
+  const unreadCount = useUnreadMessages(isAdmin);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -74,8 +77,10 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
       if (!adminDoc.exists()) {
         setOrders([]);
         setPendingOrders(0);
+        setIsAdmin(false);
         return;
       }
+      setIsAdmin(true);
       // Si es admin, obtener todos los pedidos
       const ordersRef = collection(firestore, 'orders');
       const snapshot = await getDocs(ordersRef);
@@ -407,7 +412,9 @@ const SidebarProfile = ({ open, onClose }: { open: boolean, onClose: () => void 
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>
-                  <ForumIcon color="primary" />
+                  <Badge badgeContent={unreadCount} color="error">
+                    <ForumIcon color="primary" />
+                  </Badge>
                 </ListItemIcon>
                 <ListItemText 
                   primary="Mensajes" 

@@ -35,7 +35,20 @@ export const ChatUsuario: React.FC = () => {
         const userConv = snap.docs[0];
         setChatId(userConv.id);
         const data = userConv.data();
-        setChatMessages(Array.isArray(data.messages) ? data.messages : []);
+        const messages = Array.isArray(data.messages) ? data.messages : [];
+        setChatMessages(messages);
+        
+        // Marcar mensajes del admin como leídos
+        const hasUnreadAdminMessages = messages.some((msg: ChatMessage) => msg.author === 'admin' && !msg.read);
+        if (hasUnreadAdminMessages) {
+          const updatedMessages = messages.map((msg: ChatMessage) => 
+            msg.author === 'admin' ? { ...msg, read: true } : msg
+          );
+          await updateDoc(doc(firestore, "conversations", userConv.id), {
+            messages: updatedMessages
+          });
+          setChatMessages(updatedMessages);
+        }
       } else {
         // Crear nueva conversación
         const newConv = await addDoc(collection(firestore, "conversations"), {

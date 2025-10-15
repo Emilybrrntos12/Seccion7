@@ -6,13 +6,17 @@ import HistoryIcon from '@mui/icons-material/History';
 import EditIcon from '@mui/icons-material/Edit';
 import ForumIcon from '@mui/icons-material/Forum';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { useUnreadMessages } from '@/hooks/use-unread-messages';
 
 interface SidebarMenuNavProps {
   ordersCount: number;
   onNavigate: (path: string) => void;
 }
 
-const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => (
+const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => {
+  const unreadCount = useUnreadMessages(true); // true = admin
+  
+  return (
   <Box sx={{ flex: 1, mt: 2 }}>
     <List sx={{ p: 0 }}>
       <SidebarMenuItem
@@ -40,6 +44,7 @@ const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => (
         icon={<ForumIcon color="primary" />}
         text="Mensajes (Admin)"
         onClick={() => onNavigate('/admin/mensajes')}
+        badgeContent={unreadCount}
       />
       <SidebarMenuItem
         icon={<ForumIcon color="primary" />}
@@ -53,6 +58,7 @@ const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => (
       />
     </List>
   </Box>
-);
+  );
+};
 
 export default SidebarMenuNav;

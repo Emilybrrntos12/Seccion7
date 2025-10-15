@@ -6,6 +6,7 @@ import ForumIcon from '@mui/icons-material/Forum';
 import { useUser } from "reactfire";
 import { useNavigate } from "react-router-dom";
 import { useAuthActions } from '@/hooks/use-auth-actions';
+import { useUnreadMessages } from '@/hooks/use-unread-messages';
 
 const menuItems = [
   { label: "Inicio", path: "/" },
@@ -26,6 +27,7 @@ const Header: React.FC = () => {
   };
   const navigate = useNavigate();
   const { logout } = useAuthActions();
+  const unreadCount = useUnreadMessages(false); // false = usuario normal
 
   // Estado de búsqueda global
   const [search, setSearch] = React.useState("");
@@ -101,7 +103,9 @@ const Header: React.FC = () => {
         {/* Íconos */}
         <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 }, minWidth: 120 }}>
         <IconButton color="primary" onClick={() => navigate("/chat")}> 
-          <ForumIcon />
+          <Badge badgeContent={unreadCount} color="error">
+            <ForumIcon />
+          </Badge>
         </IconButton>
           <IconButton color="primary" onClick={() => navigate("/favoritos")}> 
             <Favorite />
