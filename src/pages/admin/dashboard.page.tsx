@@ -10,6 +10,7 @@ type Product = {
   descripcion: string;
   precio: number;
   imagen?: string;
+  fotos?: string[];
 };
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -57,6 +58,7 @@ const DashboardPage = () => {
             descripcion: data.descripcion ?? '',
             precio: data.precio ?? 0,
             imagen: data.imagen,
+            fotos: Array.isArray(data.fotos) ? data.fotos : undefined,
             createdBy: data.createdBy
           };
         })
@@ -104,8 +106,12 @@ const DashboardPage = () => {
               <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr 1fr' }} gap={3}>
                 {products.map(product => (
                   <Box key={product.id} p={2} borderRadius={2} boxShadow={2} bgcolor="#fff" display="flex" flexDirection="column" alignItems="center">
-                    {product.imagen && (
-                      <img src={product.imagen} alt={product.nombre} style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8, marginBottom: 8 }} />
+                    {product.fotos && product.fotos.length > 0 ? (
+                      <img src={product.fotos[0]} alt={product.nombre} style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8, marginBottom: 8 }} />
+                    ) : (
+                      product.imagen && (
+                        <img src={product.imagen} alt={product.nombre} style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8, marginBottom: 8 }} />
+                      )
                     )}
                     <Typography variant="subtitle1" fontWeight={600}>{product.nombre}</Typography>
                     <Typography variant="body2" color="text.secondary">{product.descripcion}</Typography>

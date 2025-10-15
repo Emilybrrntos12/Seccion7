@@ -35,8 +35,8 @@ const EditProductPage = () => {
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [imagen, setImagen] = useState<string>("");
-  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [imagenes, setImagenes] = useState<string[]>([]);
+  const [nuevasImagenes, setNuevasImagenes] = useState<File[]>([]);
   const [genero, setGenero] = useState("");
   const [material, setMaterial] = useState("");
   const [tallaDisponible, setTallaDisponible] = useState<string[]>([]);
@@ -60,7 +60,7 @@ const EditProductPage = () => {
         setDescripcion(data.descripcion ?? "");
         setPrecio(data.precio?.toString() ?? "");
         setCategoria(data.categoria ?? "");
-        setImagen(data.imagen ?? "");
+  setImagenes(Array.isArray(data.fotos) ? data.fotos : (data.imagen ? [data.imagen] : []));
         setGenero(data.genero ?? "");
         setMaterial(data.material ?? "");
         setTallaDisponible(Array.isArray(data.tallaDisponible) ? data.tallaDisponible : []);
@@ -103,22 +103,22 @@ const EditProductPage = () => {
 
     setSaving(true);
     try {
-      let imageUrl = imagen;
-      if (newImageFile) {
+  const nuevasUrls: string[] = [];
+      if (nuevasImagenes.length > 0) {
         const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dfqhhvota/image/upload";
         const CLOUDINARY_PRESET = "ecommerce_unsigned";
-        const formData = new FormData();
-        formData.append("file", newImageFile);
-        formData.append("upload_preset", CLOUDINARY_PRESET);
-        const response = await fetch(CLOUDINARY_URL, {
-          method: "POST",
-          body: formData,
-        });
-        const result = await response.json();
-        if (!result.secure_url) {
-          throw new Error("Error al subir la imagen");
+        for (const file of nuevasImagenes) {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("upload_preset", CLOUDINARY_PRESET);
+          const response = await fetch(CLOUDINARY_URL, {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          if (!result.secure_url) throw new Error("Error al subir la imagen");
+          nuevasUrls.push(result.secure_url);
         }
-        imageUrl = result.secure_url;
       }
 
       const { getFirestore, doc, updateDoc } = await import("firebase/firestore/lite");
@@ -129,7 +129,7 @@ const EditProductPage = () => {
         descripcion,
         precio: parsedPrice,
         categoria,
-        imagen: imageUrl,
+        fotos: [...imagenes, ...nuevasUrls],
         genero,
         material,
         tallaDisponible,
@@ -340,56 +340,76 @@ const EditProductPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Sección de Imagen */}
+              {/* Sección de Imágenes */}
               <Card elevation={2} sx={{ borderRadius: 3 }}>
                 <CardContent sx={{ p: 3 }}>
                   <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
-                    Imagen del Producto
+                    Imágenes del Producto
                   </Typography>
-                  
                   <Box display="flex" flexDirection="column" gap={2}>
-                    {imagen && (
-                      <Box display="flex" justifyContent="center">
-                        <img 
-                          src={imagen} 
-                          alt="Vista previa" 
-                          style={{ 
-                            width: '100%', 
-                            maxWidth: 200,
-                            height: 200, 
-                            objectFit: "cover", 
-                            borderRadius: 8,
-                            border: `2px solid ${theme.palette.divider}`
-                          }} 
-                        />
+                    {/* Imágenes actuales */}
+                    {imagenes.length > 0 && (
+                      <Box display="flex" gap={2} flexWrap="wrap" justifyContent="center">
+                        {imagenes.map((img, idx) => (
+                          <Box key={idx} position="relative">
+                            <img
+                              src={img}
+                              alt={`Imagen ${idx + 1}`}
+                              style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: `2px solid ${theme.palette.divider}` }}
+                            />
+                            <Button
+                              size="small"
+                              color="error"
+                              sx={{ position: 'absolute', top: 2, right: 2, minWidth: 0, padding: '2px 6px', fontSize: 10 }}
+                              onClick={() => setImagenes(imagenes.filter((_, i) => i !== idx))}
+                            >
+                              X
+                            </Button>
+                          </Box>
+                        ))}
                       </Box>
                     )}
-                    
+                    {/* Nuevas imágenes a subir */}
+                    {nuevasImagenes.length > 0 && (
+                      <Box display="flex" gap={2} flexWrap="wrap" justifyContent="center">
+                        {nuevasImagenes.map((img, idx) => (
+                          <Box key={idx} position="relative">
+                            <img
+                              src={URL.createObjectURL(img)}
+                              alt={`Nueva ${idx + 1}`}
+                              style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: `2px solid ${theme.palette.primary.main}` }}
+                            />
+                            <Button
+                              size="small"
+                              color="error"
+                              sx={{ position: 'absolute', top: 2, right: 2, minWidth: 0, padding: '2px 6px', fontSize: 10 }}
+                              onClick={() => setNuevasImagenes(nuevasImagenes.filter((_, i) => i !== idx))}
+                            >
+                              X
+                            </Button>
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
                     <Button
                       component="label"
                       variant="outlined"
                       startIcon={<CloudUploadIcon />}
                       fullWidth
-                      sx={{
-                        borderStyle: 'dashed',
-                        borderWidth: 2,
-                        py: 1.5
-                      }}
+                      sx={{ borderStyle: 'dashed', borderWidth: 2, py: 1.5 }}
                     >
-                      {imagen ? 'Cambiar Imagen' : 'Subir Imagen'}
+                      {imagenes.length + nuevasImagenes.length > 0 ? 'Agregar más imágenes' : 'Subir Imágenes'}
                       <input
                         type="file"
                         accept="image/*"
+                        multiple
                         hidden
-                        onChange={(e) => setNewImageFile(e.target.files?.[0] || null)}
+                        onChange={e => {
+                          const files = Array.from(e.target.files || []);
+                          setNuevasImagenes(prev => [...prev, ...files]);
+                        }}
                       />
                     </Button>
-                    
-                    {newImageFile && (
-                      <Typography variant="body2" color="primary" fontWeight="medium" textAlign="center">
-                        {newImageFile.name}
-                      </Typography>
-                    )}
                   </Box>
                 </CardContent>
               </Card>
