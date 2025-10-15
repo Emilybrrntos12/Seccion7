@@ -20,6 +20,7 @@ export const ChatUsuario: React.FC = () => {
   const [newMessage, setNewMessage] = useState<string>("");
   const app = useFirebaseApp();
   const [loading, setLoading] = useState(true);
+  const chatEndRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Buscar o crear la conversación del usuario actual
@@ -66,6 +67,11 @@ export const ChatUsuario: React.FC = () => {
     if (user?.uid) fetchChat();
   }, [app, user]);
 
+  // Scroll automático al último mensaje
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages]);
+
   return (
     <div style={{ minHeight: '100vh', background: '#fff', padding: '32px 0' }}>
       <button
@@ -76,42 +82,53 @@ export const ChatUsuario: React.FC = () => {
       </button>
       <div style={{ maxWidth: 500, margin: '80px auto 0 auto', background: '#fff', borderRadius: 12, boxShadow: '0 2px 12px #0001', padding: 32 }}>
         <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, color: '#1976d2', textAlign: 'center' }}>Chat con Admin</h2>
-        {loading ? (
-          <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>Cargando chat...</div>
-        ) : chatMessages.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>No hay mensajes en esta conversación.</div>
-        ) : (
-          <div style={{ marginBottom: 24 }}>
-            {chatMessages.map((msg, idx) => (
-              <div key={idx} style={{
-                background: msg.author === "user" ? '#e3f2fd' : '#f5f5f5',
-                color: '#333',
-                borderRadius: 8,
-                padding: '10px 16px',
-                marginBottom: 10,
-                textAlign: msg.author === "user" ? 'right' : 'left'
-              }}>
-                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-                  {msg.author === "admin" ? "Admin" : "Tú"}
-                </div>
-                <div>{msg.text}</div>
-                <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
-                  {(() => {
-                    if (msg.timestamp && typeof msg.timestamp === 'object') {
-                      if ('seconds' in msg.timestamp && typeof msg.timestamp.seconds === 'number') {
-                        return new Date(msg.timestamp.seconds * 1000).toLocaleString();
+        {/* Contenedor de mensajes con scroll */}
+        <div style={{ 
+          maxHeight: '400px', 
+          overflowY: 'auto', 
+          marginBottom: 16,
+          padding: '8px',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8
+        }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>Cargando chat...</div>
+          ) : chatMessages.length === 0 ? (
+            <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>No hay mensajes en esta conversación.</div>
+          ) : (
+            <>
+              {chatMessages.map((msg, idx) => (
+                <div key={idx} style={{
+                  background: msg.author === "user" ? '#e3f2fd' : '#f5f5f5',
+                  color: '#333',
+                  borderRadius: 8,
+                  padding: '10px 16px',
+                  marginBottom: 10,
+                  textAlign: msg.author === "user" ? 'right' : 'left'
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
+                    {msg.author === "admin" ? "Admin" : "Tú"}
+                  </div>
+                  <div>{msg.text}</div>
+                  <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
+                    {(() => {
+                      if (msg.timestamp && typeof msg.timestamp === 'object') {
+                        if ('seconds' in msg.timestamp && typeof msg.timestamp.seconds === 'number') {
+                          return new Date(msg.timestamp.seconds * 1000).toLocaleString();
+                        }
+                        if (msg.timestamp instanceof Date) {
+                          return msg.timestamp.toLocaleString();
+                        }
                       }
-                      if (msg.timestamp instanceof Date) {
-                        return msg.timestamp.toLocaleString();
-                      }
-                    }
-                    return '';
-                  })()}
+                      return '';
+                    })()}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+              <div ref={chatEndRef} />
+            </>
+          )}
+        </div>
         {/* Input para enviar mensaje */}
         {chatId && (
           <form onSubmit={async e => {
@@ -131,7 +148,7 @@ export const ChatUsuario: React.FC = () => {
             });
             setChatMessages(prev => [...prev, nuevoMsg]);
             setNewMessage("");
-          }} style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          }} style={{ display: 'flex', gap: 8 }}>
             <TextField
               value={newMessage}
               onChange={e => setNewMessage(e.target.value)}

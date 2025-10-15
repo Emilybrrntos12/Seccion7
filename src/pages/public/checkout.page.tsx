@@ -18,6 +18,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import { EncuestaCompra } from "./encuesta.page";
 
 type CartItem = {
   id: string;
@@ -43,6 +44,7 @@ const CheckoutPage = () => {
   const [metodoPago, setMetodoPago] = useState("efectivo");
   const [notas, setNotas] = useState("");
   const [confirmado, setConfirmado] = useState(false);
+  const [orderId, setOrderId] = useState<string>("");
 
   const total = cartItems.reduce((acc, item) => acc + item.product_data.precio * item.cantidad, 0);
 
@@ -51,7 +53,7 @@ const CheckoutPage = () => {
     (async () => {
       try {
         // Importar Firestore
-  const { getFirestore, collection, addDoc, Timestamp, doc, getDoc, updateDoc, deleteDoc } = await import('firebase/firestore');
+        const { getFirestore, collection, addDoc, Timestamp, doc, getDoc, updateDoc, deleteDoc } = await import('firebase/firestore');
         const app = await import('firebase/app');
         const firestore = getFirestore(app.getApp());
 
@@ -78,42 +80,21 @@ const CheckoutPage = () => {
         };
 
         // Guardar pedido en la colección 'orders'
-        await addDoc(collection(firestore, 'orders'), pedido);
+        const orderDoc = await addDoc(collection(firestore, 'orders'), pedido);
+        const orderId = orderDoc.id;
 
         // Actualizar el stock de cada producto comprado
-        console.log('Iniciando actualización de stock para productos:', cartItems);
         for (const item of cartItems) {
-          console.log(`Procesando producto ${item.id_producto}, talla ${item.talla_seleccionada}`);
           const productoRef = doc(firestore, 'products', item.id_producto);
           const productoSnap = await getDoc(productoRef);
-          
           if (productoSnap.exists()) {
             const productoData = productoSnap.data();
-            console.log('Datos actuales del producto:', productoData);
-            
-            // Obtener stock por talla actual
             const stockPorTalla = { ...(productoData.stockPorTalla || {}) };
-            console.log('Stock por talla actual:', stockPorTalla);
-            
-            // Actualizar stock de la talla específica
             if (item.talla_seleccionada && stockPorTalla[item.talla_seleccionada] !== undefined) {
               const stockAnterior = stockPorTalla[item.talla_seleccionada];
               const nuevoStockTalla = Math.max(0, stockAnterior - item.cantidad);
-              
-              console.log(`Actualizando stock para talla ${item.talla_seleccionada}:`, {
-                anterior: stockAnterior,
-                cantidad: item.cantidad,
-                nuevo: nuevoStockTalla
-              });
-              
-              // Actualizar el stock por talla en el objeto local
               stockPorTalla[item.talla_seleccionada] = nuevoStockTalla;
-              
-              // Calcular nuevo stock total
               const nuevoStockTotal = Object.values(stockPorTalla).reduce((acc: number, val) => acc + (typeof val === 'number' ? val : 0), 0);
-              console.log('Nuevo stock total calculado:', nuevoStockTotal);
-              
-              // Intentar actualizar el producto
               try {
                 const updateData = {
                   stock: nuevoStockTotal,
@@ -146,7 +127,8 @@ const CheckoutPage = () => {
                 console.error('Error al eliminar item del carrito:', err);
               }
             }
-            setConfirmado(true);
+  setOrderId(orderId);
+  setConfirmado(true);
       } catch (error: unknown) {
         console.error('Error detallado:', {
           mensaje: error instanceof Error ? error.message : 'Error desconocido',
@@ -266,18 +248,18 @@ const CheckoutPage = () => {
         </CardContent>
       </Card>
       {confirmado && (
-        <Card sx={{ mt: 3, bgcolor: '#e6ffed', border: '1px solid #b7eb8f' }}>
-          <CardContent>
-            <Typography variant="h6" color="success.main">¡Pedido realizado con éxito!</Typography>
-            <Typography>Te contactaremos pronto para coordinar la entrega.</Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2, mr: 2 }} onClick={() => window.location.href = "/"}>
-                Ir al inicio
-              </Button>
-              <Button variant="outlined" color="secondary" sx={{ mt: 2 }} onClick={() => window.location.href = "/"}>
-                Regresar
-              </Button>
-          </CardContent>
-        </Card>
+        <>
+          <Card sx={{ mt: 3, bgcolor: '#e6ffed', border: '1px solid #b7eb8f' }}>
+            <CardContent>
+              <Typography variant="h6" color="success.main">¡Pedido realizado con éxito!</Typography>
+              <Typography>Te contactaremos pronto para coordinar la entrega.</Typography>
+            </CardContent>
+          </Card>
+          <div style={{ marginTop: 24 }}>
+            {/* Mini encuesta post-compra */}
+            <EncuestaCompra orderId={orderId} />
+          </div>
+        </>
       )}
     </Box>
   );

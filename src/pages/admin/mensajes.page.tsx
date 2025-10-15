@@ -30,6 +30,7 @@ export const MensajesAdmin: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const chatEndRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchConvs = async () => {
@@ -72,6 +73,11 @@ export const MensajesAdmin: React.FC = () => {
       setChatMessages([]);
     }
   }, [selectedConv]);
+
+  // Scroll automático al último mensaje
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages]);
 
   // Marcar mensajes del usuario como leídos al abrir conversación
   useEffect(() => {
@@ -157,40 +163,53 @@ export const MensajesAdmin: React.FC = () => {
         {/* Chat de la conversación seleccionada */}
         {selectedConv && (
           <div style={{ marginBottom: 24 }}>
-            {chatMessages.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>No hay mensajes en esta conversación.</div>
-            ) : (
-              chatMessages.map((msg, idx) => (
-                <div key={idx} style={{
-                  background: msg.author === "admin" ? '#e3f2fd' : '#f5f5f5',
-                  color: '#333',
-                  borderRadius: 8,
-                  padding: '10px 16px',
-                  marginBottom: 10,
-                  textAlign: msg.author === "admin" ? 'right' : 'left'
-                }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-                    {msg.author === "admin" ? "Admin" : "Usuario"}
-                  </div>
-                  <div>{msg.text}</div>
-                  <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
-                    {(() => {
-                      if (msg.timestamp && typeof msg.timestamp === 'object') {
-                        if ('seconds' in msg.timestamp && typeof msg.timestamp.seconds === 'number') {
-                          return new Date(msg.timestamp.seconds * 1000).toLocaleString();
-                        }
-                        if (msg.timestamp instanceof Date) {
-                          return msg.timestamp.toLocaleString();
-                        }
-                      }
-                      return '';
-                    })()}
-                  </div>
-                </div>
-              ))
-            )}
+            {/* Contenedor de mensajes con scroll */}
+            <div style={{ 
+              maxHeight: '400px', 
+              overflowY: 'auto', 
+              marginBottom: 16,
+              padding: '8px',
+              border: '1px solid #e0e0e0',
+              borderRadius: 8
+            }}>
+              {chatMessages.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#1976d2', padding: '32px 0' }}>No hay mensajes en esta conversación.</div>
+              ) : (
+                <>
+                  {chatMessages.map((msg, idx) => (
+                    <div key={idx} style={{
+                      background: msg.author === "admin" ? '#e3f2fd' : '#f5f5f5',
+                      color: '#333',
+                      borderRadius: 8,
+                      padding: '10px 16px',
+                      marginBottom: 10,
+                      textAlign: msg.author === "admin" ? 'right' : 'left'
+                    }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
+                        {msg.author === "admin" ? "Admin" : "Usuario"}
+                      </div>
+                      <div>{msg.text}</div>
+                      <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
+                        {(() => {
+                          if (msg.timestamp && typeof msg.timestamp === 'object') {
+                            if ('seconds' in msg.timestamp && typeof msg.timestamp.seconds === 'number') {
+                              return new Date(msg.timestamp.seconds * 1000).toLocaleString();
+                            }
+                            if (msg.timestamp instanceof Date) {
+                              return msg.timestamp.toLocaleString();
+                            }
+                          }
+                          return '';
+                        })()}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={chatEndRef} />
+                </>
+              )}
+            </div>
             {/* Input para enviar mensaje */}
-            <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+            <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: 8 }}>
               <TextField
                 value={newMessage}
                 onChange={e => setNewMessage(e.target.value)}
