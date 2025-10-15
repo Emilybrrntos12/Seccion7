@@ -28,7 +28,7 @@ const NewProductPage = () => {
   const [material, setMaterial] = useState("");
   const [suela, setSuela] = useState("");
   const [genero, setGenero] = useState("");
-  const [imagen, setImagen] = useState<File | null>(null);
+  const [imagenes, setImagenes] = useState<File[]>([]);
   const [stockPorTalla, setStockPorTalla] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -55,14 +55,23 @@ const NewProductPage = () => {
     return response.data.secure_url;
   }
 
+    async function uploadMultipleImages(files: File[]): Promise<string[]> {
+      const urls: string[] = [];
+      for (const file of files) {
+        const url = await uploadImageToCloudinary(file);
+        urls.push(url);
+      }
+      return urls;
+    }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAdmin) {
       toast.error("No tienes permisos para crear productos.");
       return;
     }
-    if (!nombre || !descripcion || !precio || !categoria || tallaDisponible.length === 0 || !material || !suela || !genero || !imagen) {
-      toast.error("Completa todos los campos y selecciona una imagen.");
+    if (!nombre || !descripcion || !precio || !categoria || tallaDisponible.length === 0 || !material || !suela || !genero || imagenes.length < 4) {
+      toast.error("Completa todos los campos y selecciona al menos 4 imágenes.");
       return;
     }
     // Validar stockPorTalla
@@ -76,9 +85,9 @@ const NewProductPage = () => {
     try {
       const user = auth.currentUser;
       if (!user) throw new Error("No autenticado");
-      let imageUrl = "";
-      if (imagen) {
-        imageUrl = await uploadImageToCloudinary(imagen);
+      let imageUrls: string[] = [];
+      if (imagenes.length >= 4) {
+        imageUrls = await uploadMultipleImages(imagenes);
       }
       const firestore = getFirestore(app);
       const productsCol = collection(firestore, "products");
@@ -92,7 +101,7 @@ const NewProductPage = () => {
         material,
         suela,
         genero,
-        imagen: imageUrl,
+        fotos: imageUrls,
         stock: totalStock,
         stockPorTalla,
         fecha_creacion: serverTimestamp(),
@@ -101,16 +110,16 @@ const NewProductPage = () => {
       };
       await addDoc(productsCol, docData);
       toast.success("Producto creado exitosamente");
-      setNombre("");
-      setDescripcion("");
-      setPrecio("");
-      setCategoria("");
-      setTallaDisponible([]);
-      setMaterial("");
-      setSuela("");
-      setGenero("");
-      setImagen(null);
-      setStockPorTalla({});
+  setNombre("");
+  setDescripcion("");
+  setPrecio("");
+  setCategoria("");
+  setTallaDisponible([]);
+  setMaterial("");
+  setSuela("");
+  setGenero("");
+  setImagenes([]);
+  setStockPorTalla({});
     } catch (err: unknown) {
       const e = err as { message?: string };
       toast.error(`Error: ${e?.message || "Error desconocido"}`);
@@ -183,10 +192,24 @@ const NewProductPage = () => {
           </FormControl>
           <Box my={2}>
             <Button variant="contained" component="label">
-              Subir imagen
-              <input type="file" accept="image/*" hidden onChange={e => setImagen(e.target.files?.[0] || null)} required />
+              Subir imágenes (mínimo 4)
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                onChange={e => {
+                  const files = Array.from(e.target.files || []);
+                  setImagenes(files);
+                }}
+                required
+              />
             </Button>
-            {imagen && <Typography variant="body2" mt={1}>Imagen seleccionada: {imagen.name}</Typography>}
+            {imagenes.length > 0 && (
+              <Typography variant="body2" mt={1}>
+                {imagenes.length} imágenes seleccionadas: {imagenes.map(img => img.name).join(", ")}
+              </Typography>
+            )}
           </Box>
           {/* Campos para stock por talla */}
           <Box my={2}>

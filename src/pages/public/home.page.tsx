@@ -15,6 +15,7 @@ type Product = {
   precio: number;
   descripcion: string;
   imagen: string;
+  fotos?: string[];
   categoria?: string;
   tallaDisponible?: string[];
   genero?: string;
@@ -118,8 +119,12 @@ const HomePage = () => {
                         : <FavoriteBorderIcon sx={{ color: 'gray', fontSize: 28 }} />}
                     </span>
                   )}
-                  {product.imagen && (
-                    <img src={product.imagen} alt={product.nombre} className="w-32 h-32 object-cover mb-2 rounded" />
+                  {product.fotos && product.fotos.length > 0 ? (
+                    <img src={product.fotos[0]} alt={product.nombre} className="w-32 h-32 object-cover mb-2 rounded" />
+                  ) : (
+                    product.imagen && (
+                      <img src={product.imagen} alt={product.nombre} className="w-32 h-32 object-cover mb-2 rounded" />
+                    )
                   )}
                   <h2 className="font-semibold text-lg mb-1">{product.nombre}</h2>
                   <p className="text-primary font-bold mb-2">${product.precio}</p>
