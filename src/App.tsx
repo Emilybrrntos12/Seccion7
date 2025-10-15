@@ -18,52 +18,62 @@ import EditProfilePage from "./pages/admin/edit-profile.page"
 import OrderPage from "./pages/admin/order.page"
 import { MensajesAdmin } from "./pages/admin/mensajes.page"
 import FavoritosPage from "./pages/public/favoritos.page"
+import {Nosotros} from "./pages/public/nosotros.page"
+
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { initAnalytics, trackPageView } from "./analytics";
 import { UserProfile } from "./components/ui/user-profile"
-import { Nosotros as NosotrosPage } from "./pages/public/nosotros.page"
 import { Contacto } from "./pages/public/contacto.page"
-import UserList from "./components/sidebar/components/UsersList"
+
 
 const App = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location]);
+
   return (
-
     <Routes>
-    <Route element={<RootLayout />}>
+      <Route element={<RootLayout />}>
+        {/* Publicas */}
+        <Route element={<PublicLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="hello" element={<HelloPage />} />
+          <Route path="producto/:id" element={<ProductDetailPage />} />
+          <Route path="cart" element={<CartPage />} />
+          <Route path="checkout" element={<CheckoutPage />} />
+          <Route path="favoritos" element={<FavoritosPage />} />
+          <Route path="perfil" element={<UserProfile />} />
+          <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/contacto" element={<Contacto />} />
+        </Route>
 
-    {/** Publicas */}
-    <Route element={<PublicLayout />}>
-  <Route index element={<HomePage />}/>
-  <Route path="hello" element={<HelloPage />} />
-  <Route path="producto/:id" element={<ProductDetailPage />} />
-  <Route path="cart" element={<CartPage />} />
-  <Route path="checkout" element={<CheckoutPage />} />
-  <Route path="favoritos" element={<FavoritosPage />} />
-  <Route path="perfil" element={<UserProfile />} />
-  <Route path="/nosotros" element={<NosotrosPage />} />
-  <Route path="/contacto" element={<Contacto />} />
-    </Route>
+        {/* Privadas */}
+        <Route path="admin" element={<AdminRoute />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="chat" element={<ChatPage />} />
+          <Route path="edit-profile" element={<EditProfilePage />} />
+          <Route path="new-product" element={<NewProductPage />} />
+          <Route path="edit-product/:id" element={<EditProductPage />} />
+          <Route path="orders" element={<OrderPage />} />
+          <Route path="mensajes" element={<MensajesAdmin />} />
+        </Route>
 
-    {/** Privadas */}
-    <Route path="admin" element={<AdminRoute />}>
-      <Route index element={<DashboardPage />}/>
-      <Route path="chat" element={<ChatPage />}/>
-      <Route path="edit-profile" element={<EditProfilePage />}/>
-      <Route path="new-product" element={<NewProductPage />}/>
-      <Route path="edit-product/:id" element={<EditProductPage />}/>
-      <Route path="orders" element={<OrderPage />}/>
-      <Route path="mensajes" element={<MensajesAdmin />} />
-      <Route path="users" element={<UserList />} />
-    </Route>
-
-    {/** Auth */}
-    <Route path="auth" element={<AuthLayout />}>
-      <Route path="login" element={<LoginPage />}/>
-      <Route path="producto/:id/auth/login" element={<LoginPage />} />
-      <Route path="register" element={<RegisterPage />}/>
-    </Route>
-
+        {/* Auth */}
+        <Route path="auth" element={<AuthLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="producto/:id/auth/login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+        </Route>
       </Route>
     </Routes>
-  )
+  );
 }
 
 export default App
