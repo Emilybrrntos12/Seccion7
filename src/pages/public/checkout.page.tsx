@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { useUser } from "reactfire";
 import { useLocation } from "react-router-dom";
 import {
@@ -95,63 +97,114 @@ const CheckoutPage = () => {
               const nuevoStockTalla = Math.max(0, stockAnterior - item.cantidad);
               stockPorTalla[item.talla_seleccionada] = nuevoStockTalla;
               const nuevoStockTotal = Object.values(stockPorTalla).reduce((acc: number, val) => acc + (typeof val === 'number' ? val : 0), 0);
-              try {
-                const updateData = {
-                  stock: nuevoStockTotal,
-                  stockPorTalla: stockPorTalla
-                };
-                
-                console.log('Datos a actualizar:', updateData);
-                await updateDoc(productoRef, updateData);
-                console.log('Actualización exitosa para el producto:', item.id_producto);
-              } catch (updateError) {
-                console.error('Error al actualizar el producto:', {
-                  productId: item.id_producto,
-                  error: updateError
-                });
-                throw updateError;
-              }
-            } else {
-              console.warn(`Advertencia: No se encontró stock para la talla ${item.talla_seleccionada}`);
+              const updateData = {
+                stock: nuevoStockTotal,
+                stockPorTalla: stockPorTalla
+              };
+              await updateDoc(productoRef, updateData);
             }
-          } else {
-            console.error('Producto no encontrado:', item.id_producto);
           }
         }
 
-            // Limpiar el carrito del usuario en Firestore
-            for (const item of cartItems) {
-              try {
-                await deleteDoc(doc(firestore, 'cart', item.id));
-              } catch (err) {
-                console.error('Error al eliminar item del carrito:', err);
+        // Limpiar el carrito del usuario en Firestore
+        for (const item of cartItems) {
+          await deleteDoc(doc(firestore, 'cart', item.id));
+        }
+
+        // SweetAlert2 flujo
+        const MySwal = withReactContent(Swal);
+        await MySwal.fire({
+          icon: 'success',
+          title: '¡Pedido registrado con éxito!',
+          text: 'Tu pedido se ha registrado correctamente.',
+          confirmButtonText: 'Entendido',
+        });
+
+        // Encuesta con estrellas y opciones
+        let confianza = 0;
+        let recomienda = '';
+        await MySwal.fire({
+          title: 'Encuesta de satisfacción',
+          html: `<div style='margin-bottom:16px;'>¿Qué tan seguro te sentiste al realizar tu compra?</div>
+            <div id='swal-stars' style='margin-bottom:16px;'></div>
+            <div style='margin-bottom:8px;'>¿Recomendarías nuestra tienda a otras personas?</div>
+            <div id='swal-recomienda'></div>`,
+          showCancelButton: false,
+          showConfirmButton: true,
+          confirmButtonText: 'Enviar',
+          didOpen: () => {
+            // Renderizar estrellas
+            const starsDiv = document.getElementById('swal-stars');
+            if (starsDiv) {
+              for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.innerHTML = '★';
+                star.style.fontSize = '2rem';
+                star.style.cursor = 'pointer';
+                star.style.color = '#ccc';
+                star.onclick = () => {
+                  confianza = i;
+                  Array.from(starsDiv.children).forEach((el, idx) => {
+                    (el as HTMLElement).style.color = idx < i ? '#FFD700' : '#ccc';
+                  });
+                };
+                starsDiv.appendChild(star);
               }
             }
-  setOrderId(orderId);
-  setConfirmado(true);
-      } catch (error: unknown) {
-        console.error('Error detallado:', {
-          mensaje: error instanceof Error ? error.message : 'Error desconocido',
-          stack: error instanceof Error ? error.stack : undefined
+            // Renderizar opciones recomienda
+            const recDiv = document.getElementById('swal-recomienda');
+            if (recDiv) {
+              ['Sí', 'No', 'Tal vez'].forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt;
+                btn.style.marginRight = '8px';
+                btn.style.padding = '6px 16px';
+                btn.style.borderRadius = '6px';
+                btn.style.border = '1px solid #1976d2';
+                btn.style.background = '#fff';
+                btn.style.color = '#1976d2';
+                btn.style.cursor = 'pointer';
+                btn.onclick = () => {
+                  recomienda = opt.toLowerCase();
+                  Array.from(recDiv.children).forEach((el) => {
+                    (el as HTMLElement).style.background = '#fff';
+                  });
+                  btn.style.background = '#e3f2fd';
+                };
+                recDiv.appendChild(btn);
+              });
+            }
+          },
+          preConfirm: () => {
+            if (!confianza || !recomienda) {
+              Swal.showValidationMessage('Por favor responde ambas preguntas');
+              return false;
+            }
+            return { confianza, recomienda };
+          }
+        }).then(async result => {
+          if (result.isConfirmed && result.value) {
+            // Guardar encuesta en Firestore
+            await addDoc(collection(firestore, "encuestas"), {
+              orderId,
+              userId: user?.uid,
+              confianza: result.value.confianza,
+              recomienda: result.value.recomienda,
+              createdAt: new Date().toISOString()
+            });
+            await MySwal.fire({
+              icon: 'success',
+              title: '¡Gracias por tu respuesta!',
+              text: 'Tu opinión nos ayuda a mejorar.',
+              confirmButtonText: 'Cerrar'
+            });
+          }
         });
-        
-        // Verificar el estado de autenticación
-        console.log('Estado de autenticación:', {
-          usuarioLogueado: !!user,
-          uid: user?.uid,
-          email: user?.email
-        });
-        
-        let mensajeError = 'Hubo un error al confirmar el pedido. ';
-        if (error && typeof error === 'object' && 'code' in error && error.code === 'permission-denied') {
-          mensajeError += 'No tienes permisos para realizar esta operación. Verifica que hayas iniciado sesión.';
-        } else if (error && typeof error === 'object' && 'code' in error && error.code === 'not-found') {
-          mensajeError += 'No se encontró algún producto del carrito.';
-        } else {
-          mensajeError += 'Por favor, intenta de nuevo.';
-        }
-        
-        alert(mensajeError);
+
+        setOrderId(orderId);
+        setConfirmado(true);
+      } catch {
+        alert('Hubo un error al confirmar el pedido. Por favor, intenta de nuevo.');
       }
     })();
   };

@@ -26,6 +26,7 @@ import { useLocation } from "react-router-dom";
 import { initAnalytics, trackPageView } from "./analytics";
 import { UserProfile } from "./components/ui/user-profile"
 import { Contacto } from "./pages/public/contacto.page"
+import UsersList from "./components/sidebar/components/UsersList";
 
 
 const App = () => {
@@ -65,6 +66,7 @@ const App = () => {
           <Route path="edit-product/:id" element={<EditProductPage />} />
           <Route path="orders" element={<OrderPage />} />
           <Route path="mensajes" element={<MensajesAdmin />} />
+          <Route path="users" element={<UsersList />} />
         </Route>
 
         {/* Auth */}
