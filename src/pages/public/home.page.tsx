@@ -117,7 +117,7 @@ const HomePage = () => {
           
           {/* Resultados de búsqueda */}
           {search && (
-            <div className="mb-6 bg-white/70 backdrop-blur-sm rounded-xl p-4 inline-block">
+            <div className="mb-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 inline-block">
               <h2 className="text-xl font-semibold text-[#8B7355]">
                 Resultados para: <span className="text-[#A0522D]">"{search}"</span>
               </h2>
