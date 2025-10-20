@@ -12,7 +12,6 @@ import ChatPage from "./pages/admin/chat.page"
 import NewProductPage from "./pages/admin/product/new-product.page"
 import EditProductPage from "./pages/admin/product/edit-product.page"
 import LoginPage from "./pages/auth/login.page"
-import RegisterPage from "./pages/auth/register.page"
 import CartPage from "./pages/public/cart.page"
 import CheckoutPage from "./pages/public/checkout.page"
 import EditProfilePage from "./pages/admin/edit-profile.page"
@@ -73,7 +72,6 @@ const App = () => {
         <Route path="auth" element={<AuthLayout />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="producto/:id/auth/login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
         </Route>
       </Route>
     </Routes>
