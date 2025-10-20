@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAuthActions } from "../../hooks/use-auth-actions";
   import { useState, useEffect } from "react";
 import { useSigninCheck, useFirebaseApp } from "reactfire";
@@ -76,6 +77,36 @@ const LoginPage = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', justifyContent: 'center' }}>
+      {/* Botón regresar */}
+<Button
+  startIcon={<ArrowBackIcon sx={{ fontSize: 28 }} />}
+  onClick={() => navigate('/')}
+  sx={{
+    position: 'absolute',
+    top: { xs: 16, md: 32 },
+    left: { xs: 16, md: 32 },
+    color: '#8B7355',
+    background: 'rgba(255,253,249,0.95)',
+    border: '1px solid #e8dcc8',
+    borderRadius: '50%',
+    minWidth: 'auto',
+    width: 56, // Aumenté el tamaño para acomodar la flecha más grande
+    height: 56,
+    fontWeight: 600,
+    textTransform: 'none',
+    boxShadow: '0 2px 8px rgba(139, 69, 19, 0.08)',
+    zIndex: 10,
+    '& .MuiButton-startIcon': {
+      margin: 0, // Elimina el margen del ícono para que quede centrado
+    },
+    '&:hover': {
+      background: 'linear-gradient(45deg, #8B7355, #A0522D)',
+      color: '#fff',
+      borderColor: '#A0522D',
+    }
+  }}
+>
+</Button>
       {/* Columna imagen */}
       <Box sx={{ flex: 1, minWidth: 400, maxWidth: 600, height: { xs: 200, md: '80vh' }, display: { xs: 'none', md: 'flex' }, alignItems: 'center', justifyContent: 'center', boxShadow: 3, borderRadius: 4, overflow: 'hidden', mr: 4, background: 'transparent' }}>
         <img src={bootImage} alt="Bota" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.12)', background: 'transparent' }} />
