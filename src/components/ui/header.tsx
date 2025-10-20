@@ -10,7 +10,6 @@ import { useUnreadMessages } from '@/hooks/use-unread-messages';
 
 const menuItems = [
   { label: "Inicio", path: "/" },
-  { label: "Catálogo", path: "/catalogo" },
   { label: "Nosotros", path: "/nosotros" },
   { label: "Contacto", path: "/contacto" },
 ];
@@ -27,17 +26,23 @@ const Header: React.FC = () => {
   };
   const navigate = useNavigate();
   const { logout } = useAuthActions();
-  const unreadCount = useUnreadMessages(false); // false = usuario normal
+  const unreadCount = useUnreadMessages(false);
 
-  // Estado de búsqueda global
   const [search, setSearch] = React.useState("");
-  // Guardar el texto en localStorage para persistencia entre páginas
   React.useEffect(() => {
     localStorage.setItem("searchText", search);
   }, [search]);
 
   return (
-    <AppBar position="static" color="inherit" elevation={1}>
+    <AppBar 
+      position="static" 
+      color="inherit" 
+      elevation={1}
+      sx={{
+        background: 'linear-gradient(145deg, #ffffff 0%, #f8f4f0 100%)',
+        borderBottom: '1px solid #e8dcc8'
+      }}
+    >
       <Toolbar
         sx={{
           display: "flex",
@@ -46,6 +51,7 @@ const Header: React.FC = () => {
           alignItems: "center",
           gap: { xs: 1, md: 2 },
           px: { xs: 1, md: 3 },
+          py: 1
         }}
       >
         {/* Logo / Nombre */}
@@ -53,35 +59,59 @@ const Header: React.FC = () => {
           <Typography
             variant="h6"
             fontWeight="bold"
-            sx={{ cursor: "pointer", color: "primary.main", fontSize: { xs: "1.1rem", md: "1.5rem" } }}
+            sx={{ 
+              cursor: "pointer", 
+              background: 'linear-gradient(45deg, #8B7355, #A0522D)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              fontSize: { xs: "1.1rem", md: "1.5rem" },
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-1px)'
+              }
+            }}
             onClick={() => navigate("/")}
           >
-            MiTienda
+            ZABARR
           </Typography>
         </Box>
 
         {/* Menú principal - ocultar en xs */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
           {menuItems.map((item) => (
             <Button
               key={item.label}
               color="inherit"
               onClick={() => navigate(item.path)}
-              sx={{ fontWeight: "bold", textTransform: "none", fontSize: { xs: "0.9rem", md: "1rem" } }}
+              sx={{ 
+                fontWeight: 600, 
+                textTransform: "none", 
+                fontSize: "0.95rem",
+                color: '#8B7355',
+                borderRadius: 2,
+                px: 2,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  background: 'rgba(139, 115, 85, 0.08)',
+                  color: '#A0522D',
+                  transform: 'translateY(-1px)'
+                }
+              }}
             >
               {item.label}
             </Button>
           ))}
         </Box>
 
-        {/* Barra de búsqueda - ocupa toda la fila en xs */}
+        {/* Barra de búsqueda */}
         <Box sx={{
           display: "flex",
           alignItems: "center",
           mx: { xs: 0, md: 2 },
           flex: 1,
-          maxWidth: { xs: "100%", md: 300 },
-          minWidth: { xs: "100%", md: 200 },
+          maxWidth: { xs: "100%", md: 400 },
+          minWidth: { xs: "100%", md: 250 },
           my: { xs: 1, md: 0 },
         }}>
           <InputBase
@@ -89,39 +119,113 @@ const Header: React.FC = () => {
             value={search}
             onChange={e => setSearch(e.target.value)}
             sx={{
-              backgroundColor: "#f1f3f4",
+              backgroundColor: "#fffdf9",
+              border: '1px solid #e8dcc8',
               px: 2,
-              py: 0.5,
+              py: 1,
               borderRadius: 2,
               width: "100%",
-              fontSize: { xs: "0.95rem", md: "1rem" },
+              fontSize: "0.95rem",
+              color: '#8B7355',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                borderColor: '#8B7355',
+              },
+              '&:focus-within': {
+                borderColor: '#8B7355',
+                borderWidth: '2px'
+              },
+              '&::placeholder': {
+                color: '#D2C1B0'
+              }
             }}
             inputProps={{ 'aria-label': 'buscar' }}
           />
         </Box>
 
         {/* Íconos */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 }, minWidth: 120 }}>
-        <IconButton color="primary" onClick={() => navigate("/chat")}> 
-          <Badge badgeContent={unreadCount} color="error">
-            <ForumIcon />
-          </Badge>
-        </IconButton>
-          <IconButton color="primary" onClick={() => navigate("/favoritos")}> 
+        <Box sx={{ 
+          display: "flex", 
+          alignItems: "center", 
+          gap: { xs: 0.5, md: 1.5 }, 
+          minWidth: 120,
+          justifyContent: 'flex-end'
+        }}>
+          <IconButton 
+            onClick={() => navigate("/chat")}
+            sx={{ 
+              color: '#8B7355',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                color: '#A0522D',
+                background: 'rgba(139, 115, 85, 0.08)',
+                transform: 'scale(1.1)'
+              }
+            }}
+          > 
+            <Badge badgeContent={unreadCount} color="error">
+              <ForumIcon />
+            </Badge>
+          </IconButton>
+          
+          <IconButton 
+            onClick={() => navigate("/favoritos")}
+            sx={{ 
+              color: '#8B7355',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                color: '#A0522D',
+                background: 'rgba(139, 115, 85, 0.08)',
+                transform: 'scale(1.1)'
+              }
+            }}
+          > 
             <Favorite />
           </IconButton>
-          <IconButton color="primary" onClick={() => navigate("/cart")}> 
+          
+          <IconButton 
+            onClick={() => navigate("/cart")}
+            sx={{ 
+              color: '#8B7355',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                color: '#A0522D',
+                background: 'rgba(139, 115, 85, 0.08)',
+                transform: 'scale(1.1)'
+              }
+            }}
+          > 
             <Badge badgeContent={0} color="error">
               <ShoppingCart />
             </Badge>
           </IconButton>
+          
           {user ? (
-            <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 } }}>
-              <Avatar src={user.photoURL || undefined} sx={{ width: { xs: 28, md: 32 }, height: { xs: 28, md: 32 } }} />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Avatar 
+                src={user.photoURL || undefined} 
+                sx={{ 
+                  width: { xs: 32, md: 36 }, 
+                  height: { xs: 32, md: 36 },
+                  border: '2px solid #e8dcc8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    borderColor: '#8B7355',
+                    transform: 'scale(1.05)'
+                  }
+                }}
+                onClick={handleMenuOpen}
+              />
               <Typography
                 variant="body2"
-                fontWeight="bold"
-                sx={{ fontSize: { xs: "0.85rem", md: "1rem" }, cursor: "pointer" }}
+                fontWeight="600"
+                sx={{ 
+                  fontSize: { xs: "0.85rem", md: "0.95rem" }, 
+                  cursor: "pointer",
+                  color: '#8B7355',
+                  display: { xs: 'none', sm: 'block' }
+                }}
                 onClick={handleMenuOpen}
               >
                 {user.displayName || "Usuario"}
@@ -132,16 +236,63 @@ const Header: React.FC = () => {
                 onClose={handleMenuClose}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                PaperProps={{
+                  sx: {
+                    borderRadius: 2,
+                    border: '1px solid #e8dcc8',
+                    background: '#fffdf9',
+                    mt: 1,
+                    minWidth: 160
+                  }
+                }}
               >
-                {/* Solo mostrar si el usuario se autenticó por Google */}
                 {user.providerData?.some((prov: { providerId: string }) => prov.providerId === "google.com") && (
-                  <MenuItem onClick={() => { handleMenuClose(); navigate("/perfil"); }}>Editar perfil</MenuItem>
+                  <MenuItem 
+                    onClick={() => { handleMenuClose(); navigate("/perfil"); }}
+                    sx={{
+                      color: '#8B7355',
+                      fontSize: '0.9rem',
+                      fontWeight: 500,
+                      '&:hover': {
+                        background: 'rgba(139, 115, 85, 0.08)',
+                        color: '#A0522D'
+                      }
+                    }}
+                  >
+                    Editar perfil
+                  </MenuItem>
                 )}
-                <MenuItem onClick={() => { handleMenuClose(); logout(); }}>Cerrar sesión</MenuItem>
+                <MenuItem 
+                  onClick={() => { handleMenuClose(); logout(); }}
+                  sx={{
+                    color: '#8B7355',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    '&:hover': {
+                      background: 'rgba(139, 115, 85, 0.08)',
+                      color: '#A0522D'
+                    }
+                  }}
+                >
+                  Cerrar sesión
+                </MenuItem>
               </Menu>
             </Box>
           ) : (
-            <IconButton color="primary" onClick={() => navigate("/auth/login")}> <Person /> </IconButton>
+            <IconButton 
+              onClick={() => navigate("/auth/login")}
+              sx={{ 
+                color: '#8B7355',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  color: '#A0522D',
+                  background: 'rgba(139, 115, 85, 0.08)',
+                  transform: 'scale(1.1)'
+                }
+              }}
+            > 
+              <Person /> 
+            </IconButton>
           )}
         </Box>
       </Toolbar>

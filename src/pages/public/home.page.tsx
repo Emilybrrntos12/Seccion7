@@ -77,7 +77,6 @@ const HomePage = () => {
       <Header />
       <div className="min-h-screen bg-gray-50">
         <main className="max-w-4xl mx-auto p-6">
-          <h1 className="text-2xl font-bold mb-6">Catálogo de Productos</h1>
           {/* Filtros avanzados */}
           <CatalogFilters
             categoria={categoria}

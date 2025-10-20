@@ -51,7 +51,7 @@ const CartPage = () => {
   useEffect(() => {
     if (status === 'loading') return;
     if (!signInCheckResult?.signedIn) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
