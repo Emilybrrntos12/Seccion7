@@ -36,11 +36,17 @@ const Header: React.FC = () => {
   return (
     <AppBar 
       position="static" 
-      color="inherit" 
-      elevation={1}
+      color="transparent" // Cambiado a transparent
+      elevation={1} // Eliminamos la sombra
       sx={{
-        background: 'linear-gradient(145deg, #ffffff 0%, #f8f4f0 100%)',
-        borderBottom: '1px solid #e8dcc8'
+        background: 'transparent', // Fondo transparente
+        border: '1px solid transparent', // Sin bordes
+        boxShadow: 'none', // Sin sombras
+        position: 'absolute', // Para que quede sobre el contenido
+        top: 10,
+        left: 0,
+        right: 0,
+        zIndex: 1000
       }}
     >
       <Toolbar
