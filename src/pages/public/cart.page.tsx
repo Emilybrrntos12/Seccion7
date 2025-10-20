@@ -55,6 +55,8 @@ const CartPage = () => {
       return;
     }
 
+    
+
     const firestore = getFirestore(app);
     const cartRef = collection(firestore, 'cart');
     const userId = signInCheckResult.user.uid;

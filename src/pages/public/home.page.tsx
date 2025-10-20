@@ -38,6 +38,8 @@ const HomePage = () => {
   const { data: user } = useUser();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
+  
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);

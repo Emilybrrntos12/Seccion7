@@ -15,6 +15,8 @@ import {
   Person
 } from "@mui/icons-material";
 
+
+
 interface CatalogFiltersProps {
   categoria: string;
   setCategoria: (value: string) => void;
