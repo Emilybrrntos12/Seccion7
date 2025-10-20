@@ -4,7 +4,6 @@ import {
   Button,
   TextField,
   Paper,
-  Link,
   Divider,
   InputAdornment,
   CircularProgress
@@ -101,13 +100,13 @@ const LoginPage = () => {
       maxWidth: 420, 
       width: '100%', 
       borderRadius: 3,
-      background: 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
+      background: '#ffffff',
       border: '1px solid',
-      borderColor: 'divider',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+      borderColor: '#e8dcc8',
+      boxShadow: '0 8px 32px rgba(139, 69, 19, 0.08)',
       transition: 'all 0.3s ease-in-out',
       '&:hover': {
-        boxShadow: '0 12px 48px rgba(0,0,0,0.12)',
+        boxShadow: '0 12px 48px rgba(139, 69, 19, 0.12)',
         transform: 'translateY(-2px)'
       }
     }}
@@ -119,16 +118,16 @@ const LoginPage = () => {
         fontWeight={800} 
         gutterBottom
         sx={{
-          background: 'linear-gradient(45deg, primary.main, primary.dark)',
+          background: 'linear-gradient(45deg, #8B7355, #A0522D)',
           backgroundClip: 'text',
           WebkitBackgroundClip: 'text',
           color: 'transparent',
           fontSize: { xs: '1.75rem', sm: '2rem' }
         }}
       >
-        <Box component="span" sx={{ color: 'primary.main' }}> Bienvenido a BM</Box>
+        <Box component="span" sx={{ color: '#8B7355' }}> Bienvenido a BM</Box>
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
+      <Typography variant="body2" color="#8B7355" sx={{ opacity: 0.7 }}>
         Inicia sesión en tu cuenta
       </Typography>
     </Box>
@@ -144,26 +143,33 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <EmailIcon color="primary" sx={{ opacity: 0.7 }} />
+              <EmailIcon sx={{ color: '#8B7355', opacity: 0.7 }} />
             </InputAdornment>
           ),
         }}
-        placeholder="tu@ejemplo.com"
+        placeholder="ejemplo@gmail.com"
         required
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: 2,
             transition: 'all 0.2s',
+            backgroundColor: '#fffdf9',
             '&:hover': {
               '& fieldset': {
-                borderColor: 'primary.main',
+                borderColor: '#8B7355',
               }
             },
             '&.Mui-focused': {
               '& fieldset': {
                 borderWidth: 2,
-                borderColor: 'primary.main',
+                borderColor: '#8B7355',
               }
+            }
+          },
+          '& .MuiInputLabel-root': {
+            color: '#8B7355',
+            '&.Mui-focused': {
+            color: '#8B7355'
             }
           }
         }}
@@ -179,7 +185,7 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <LockIcon color="primary" sx={{ opacity: 0.7 }} />
+              <LockIcon sx={{ color: '#8B7355', opacity: 0.7 }} />
             </InputAdornment>
           ),
         }}
@@ -189,46 +195,32 @@ const LoginPage = () => {
           '& .MuiOutlinedInput-root': {
             borderRadius: 2,
             transition: 'all 0.2s',
+            backgroundColor: '#fffdf9',
             '&:hover': {
               '& fieldset': {
-                borderColor: 'primary.main',
+                borderColor: '#8B7355',
               }
             },
             '&.Mui-focused': {
               '& fieldset': {
                 borderWidth: 2,
-                borderColor: 'primary.main',
+                borderColor: '#8B7355',
               }
+            }
+          },
+          '& .MuiInputLabel-root': {
+            color: '#8B7355',
+            '&.Mui-focused': {
+            color: '#8B7355'
             }
           }
         }}
       />
 
-      {/* Enlace de recuperación */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-        <Link 
-          href="#" 
-          underline="hover" 
-          sx={{ 
-            fontSize: 14, 
-            fontWeight: 500,
-            color: 'primary.main',
-            transition: 'all 0.2s',
-            '&:hover': {
-              color: 'primary.dark',
-              transform: 'translateX(2px)'
-            }
-          }}
-        >
-          ¿Olvidaste tu contraseña?
-        </Link>
-      </Box>
-
       {/* Botón de envío mejorado */}
       <Button
         type="submit"
         variant="contained"
-        color="primary"
         fullWidth
         disabled={loading}
         sx={{ 
@@ -237,15 +229,16 @@ const LoginPage = () => {
           fontSize: '1rem',
           borderRadius: 2,
           textTransform: 'none',
-          background: 'linear-gradient(45deg, primary.main, primary.dark)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+          background: 'linear-gradient(45deg, #8B7355, #A0522D)',
+          boxShadow: '0 4px 16px rgba(139, 115, 85, 0.2)',
           transition: 'all 0.3s ease',
           '&:hover': {
             transform: 'translateY(-1px)',
-            boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+            boxShadow: '0 6px 20px rgba(139, 115, 85, 0.3)',
+            background: 'linear-gradient(45deg, #7A6348, #8B4513)',
           },
           '&:disabled': {
-            background: 'grey.300',
+            background: '#D2C1B0',
             transform: 'none',
             boxShadow: 'none'
           }
@@ -262,17 +255,17 @@ const LoginPage = () => {
       </Button>
 
       {/* Divider con mejor estilo */}
-      <Divider sx={{ my: 2, color: 'text.secondary', '&::before, &::after': { borderColor: 'divider' } }}>
-        <Typography variant="body2" color="text.secondary" sx={{ px: 2, opacity: 0.7 }}>
+      <Divider sx={{ my: 2, color: '#8B7355', '&::before, &::after': { borderColor: '#D2C1B0' } }}>
+        <Typography variant="body2" color="#8B7355" sx={{ px: 2, opacity: 0.7 }}>
           O continúa con
         </Typography>
       </Divider>
     </Box>
 
     {/* Footer de auth */}
-    <Box sx={{ mt: 3 }}>
-      <CardFooterAuth type={"login"} loading={loading} />
-    </Box>
+<Box sx={{ mt: 3 }}>
+  <CardFooterAuth loading={loading} />
+</Box>
   </Paper>
 </Box>
     </Box>
