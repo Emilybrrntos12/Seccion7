@@ -24,7 +24,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Paper,
 } from "@mui/material";
 import {
   LocalShipping,
@@ -49,6 +48,7 @@ type CartItem = {
     nombre: string;
     precio: number;
     imagen: string;
+    fotos?: string[];
   };
 };
 
@@ -317,11 +317,21 @@ const CheckoutPage = () => {
   const handleContinuarAPago = (e: React.FormEvent) => {
     e.preventDefault();
     // Validar campos de envío
-    if (!nombre || !direccion || !telefono) {
+    if (!nombre.trim() || !direccion.trim() || !telefono.trim()) {
       Swal.fire({
         icon: 'warning',
         title: 'Campos incompletos',
         text: 'Por favor completa todos los campos de envío antes de continuar.',
+        background: '#fffdf9',
+        color: '#5d4037'
+      });
+      return;
+    }
+    if (!/^[0-9]+$/.test(telefono.trim())) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Teléfono inválido',
+        text: 'El campo teléfono solo debe contener números.',
         background: '#fffdf9',
         color: '#5d4037'
       });
@@ -499,9 +509,14 @@ const CheckoutPage = () => {
                         <TextField
                           label="Teléfono de contacto"
                           value={telefono}
-                          onChange={(e) => setTelefono(e.target.value)}
+                          onChange={(e) => {
+                            // Solo permitir números
+                            const val = e.target.value;
+                            if (/^\d*$/.test(val)) setTelefono(val);
+                          }}
                           fullWidth
                           required
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 15 }}
                           InputProps={{
                             startAdornment: <Phone sx={{ color: '#8B7355', mr: 1 }} />
                           }}
@@ -694,21 +709,52 @@ const CheckoutPage = () => {
                       <Divider sx={{ my: 2 }} />
                       <Typography variant="h6" fontWeight="600" sx={{ color: '#8B7355', mb: 2 }}>Productos</Typography>
                       <List sx={{ maxWidth: 500, mx: 'auto', mb: 2 }}>
-                        {cartItems.map((item) => (
-                          <ListItem key={item.id} sx={{ px: 0, py: 1 }}>
-                            <ListItemText
-                              primary={<>
-                                <b>{item.product_data.nombre}</b> (Talla {item.talla_seleccionada})
-                              </>}
-                              secondary={<>
-                                Cantidad: {item.cantidad} &nbsp;|&nbsp; Q{item.product_data.precio} c/u
-                              </>}
-                            />
-                            <Typography fontWeight="600" sx={{ color: '#5d4037', minWidth: 80, textAlign: 'right' }}>
-                              Q{(item.product_data.precio * item.cantidad).toLocaleString()}
-                            </Typography>
-                          </ListItem>
-                        ))}
+                        {cartItems.map((item) => {
+                          // Depuración de imagen
+                          const imgUrl = (item.product_data.fotos && item.product_data.fotos[0]) || item.product_data.imagen || '';
+                          console.log('IMG URL:', imgUrl, 'Nombre:', item.product_data.nombre);
+                          return (
+                            <ListItem key={item.id} sx={{ px: 0, py: 2 }}>
+                              <img
+                                src={imgUrl}
+                                alt={item.product_data.nombre}
+                                style={{
+                                  width: 60,
+                                  height: 60,
+                                  marginRight: 16,
+                                  borderRadius: 8,
+                                  objectFit: 'cover',
+                                  border: '2px solid #e8dcc8'
+                                }}
+                                onError={e => (e.currentTarget.style.display = 'none')}
+                              />
+                              <ListItemText
+                                primary={
+                                  <Typography variant="body1" fontWeight="600" sx={{ color: '#5d4037' }}>
+                                    {item.product_data.nombre}
+                                  </Typography>
+                                }
+                                secondary={
+                                  <Box sx={{ mt: 1 }}>
+                                    <Chip
+                                      label={`Talla ${item.talla_seleccionada}`}
+                                      size="small"
+                                      sx={{
+                                        background: '#e8dcc8',
+                                        color: '#8B7355',
+                                        fontWeight: '600',
+                                        mr: 1
+                                      }}
+                                    />
+                                    <Typography variant="body2" sx={{ color: '#8B7355', mt: 0.5 }}>
+                                      Cantidad: {item.cantidad} × ${item.product_data.precio}
+                                    </Typography>
+                                  </Box>
+                                }
+                              />
+                            </ListItem>
+                          );
+                        })}
                       </List>
                       <Divider sx={{ my: 2 }} />
                       <Typography variant="h5" fontWeight="700" sx={{ color: '#A0522D', mb: 2 }}>
@@ -778,46 +824,52 @@ const CheckoutPage = () => {
 
                 <Box sx={{ p: 3, maxHeight: '400px', overflowY: 'auto' }}>
                   <List>
-                    {cartItems.map((item) => (
-                      <ListItem key={item.id} sx={{ px: 0, py: 2 }}>
-                        <img 
-                          src={item.product_data.imagen} 
-                          alt={item.product_data.nombre} 
-                          style={{ 
-                            width: 60, 
-                            height: 60, 
-                            marginRight: 16, 
-                            borderRadius: 8,
-                            objectFit: 'cover',
-                            border: '2px solid #e8dcc8'
-                          }} 
-                        />
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1" fontWeight="600" sx={{ color: '#5d4037' }}>
-                              {item.product_data.nombre}
-                            </Typography>
-                          }
-                          secondary={
-                            <Box sx={{ mt: 1 }}>
-                              <Chip 
-                                label={`Talla ${item.talla_seleccionada}`} 
-                                size="small" 
-                                sx={{ 
-                                  background: '#e8dcc8', 
-                                  color: '#8B7355',
-                                  fontWeight: '600',
-                                  mr: 1
-                                }} 
-                              />
-                              <Typography variant="body2" sx={{ color: '#8B7355', mt: 0.5 }}>
-                                Cantidad: {item.cantidad} × ${item.product_data.precio}
+                    {cartItems.map((item) => {
+                      // Depuración de imagen
+                      const imgUrl = (item.product_data.fotos && item.product_data.fotos[0]) || item.product_data.imagen || '';
+                      console.log('IMG URL:', imgUrl, 'Nombre:', item.product_data.nombre);
+                      return (
+                        <ListItem key={item.id} sx={{ px: 0, py: 2 }}>
+                          <img
+                            src={imgUrl}
+                            alt={item.product_data.nombre}
+                            style={{
+                              width: 60,
+                              height: 60,
+                              marginRight: 16,
+                              borderRadius: 8,
+                              objectFit: 'cover',
+                              border: '2px solid #e8dcc8'
+                            }}
+                            onError={e => (e.currentTarget.style.display = 'none')}
+                          />
+                          <ListItemText
+                            primary={
+                              <Typography variant="body1" fontWeight="600" sx={{ color: '#5d4037' }}>
+                                {item.product_data.nombre}
                               </Typography>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                    ))}
+                            }
+                            secondary={
+                              <Box sx={{ mt: 1 }}>
+                                <Chip
+                                  label={`Talla ${item.talla_seleccionada}`}
+                                  size="small"
+                                  sx={{
+                                    background: '#e8dcc8',
+                                    color: '#8B7355',
+                                    fontWeight: '600',
+                                    mr: 1
+                                  }}
+                                />
+                                <Typography variant="body2" sx={{ color: '#8B7355', mt: 0.5 }}>
+                                  Cantidad: {item.cantidad} × ${item.product_data.precio}
+                                </Typography>
+                              </Box>
+                            }
+                          />
+                        </ListItem>
+                      );
+                    })}
                   </List>
                 </Box>
 
@@ -855,25 +907,6 @@ const CheckoutPage = () => {
                 </Box>
               </CardContent>
             </Card>
-
-            {/* Información de seguridad */}
-            <Paper sx={{ 
-              mt: 3, 
-              p: 3, 
-              background: '#fffdf9',
-              borderRadius: 3,
-              border: '1px solid #e8dcc8'
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                <LocalShipping sx={{ color: '#8B7355' }} />
-                <Typography variant="body2" fontWeight="600" sx={{ color: '#5d4037' }}>
-                  Envío gratis a nivel nacional
-                </Typography>
-              </Box>
-              <Typography variant="body2" sx={{ color: '#8B7355', opacity: 0.8 }}>
-                Tu pedido será procesado en 24-48 horas y enviado con la mayor brevedad posible.
-              </Typography>
-            </Paper>
           </Box>
         </Box>
       </Box>
