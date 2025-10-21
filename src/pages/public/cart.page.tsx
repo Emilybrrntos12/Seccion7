@@ -210,140 +210,151 @@ const CartPage = () => {
               <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 4 }}>
                 {/* Lista de productos */}
                 <Box sx={{ flex: 1 }}>
-                  {cartItems.map((item,) => (
-                    <Card 
-                      key={item.id} 
-                      sx={{ 
-                        mb: 3, 
-                        p: 3,
-                        background: 'white',
-                        borderRadius: 3,
-                        boxShadow: '0 4px 20px rgba(139, 115, 85, 0.1)',
-                        border: '1px solid #e8dcc8',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: '0 8px 30px rgba(139, 115, 85, 0.15)'
-                        }
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', gap: 3 }}>
-                        {/* Imagen del producto */}
-                        <CardMedia
-                          component="img"
-                          image={Array.isArray(item.product_data.fotos) && item.product_data.fotos.length > 0 ? item.product_data.fotos[0] : undefined}
-                          alt={item.product_data.nombre}
-                          sx={{ 
-                            width: 120, 
-                            height: 120, 
-                            objectFit: 'cover', 
-                            borderRadius: 2,
-                            border: '2px solid #e8dcc8'
-                          }}
-                        />
-                        
-                        {/* Información del producto */}
-                        <Box sx={{ flex: 1 }}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                            <Box>
-                              <Typography variant="h6" fontWeight="600" sx={{ color: '#5d4037', mb: 1 }}>
-                                {item.product_data.nombre}
-                              </Typography>
-                              <Chip 
-                                label={`Talla ${item.talla_seleccionada}`}
-                                size="small"
+                  {cartItems.map((item) => {
+                    // Depuración: mostrar en consola las imágenes de cada producto
+                    console.log('CART IMG', {
+                      id: item.id,
+                      nombre: item.product_data.nombre,
+                      fotos: item.product_data.fotos,
+                      imagen: item.product_data.imagen
+                    });
+                    return (
+                      <Card 
+                        key={item.id} 
+                        sx={{ 
+                          mb: 3, 
+                          p: 3,
+                          background: 'white',
+                          borderRadius: 3,
+                          boxShadow: '0 4px 20px rgba(139, 115, 85, 0.1)',
+                          border: '1px solid #e8dcc8',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 8px 30px rgba(139, 115, 85, 0.15)'
+                          }
+                        }}
+                      >
+                        <Box sx={{ display: 'flex', gap: 3 }}>
+                          {/* Imagen del producto */}
+                          <CardMedia
+                            component="img"
+                            image={Array.isArray(item.product_data.fotos) && item.product_data.fotos.length > 0
+                              ? item.product_data.fotos[0]
+                              : item.product_data.imagen}
+                            alt={item.product_data.nombre}
+                            sx={{ 
+                              width: 120, 
+                              height: 120, 
+                              objectFit: 'cover', 
+                              borderRadius: 2,
+                              border: '2px solid #e8dcc8'
+                            }}
+                          />
+                          
+                          {/* Información del producto */}
+                          <Box sx={{ flex: 1 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                              <Box>
+                                <Typography variant="h6" fontWeight="600" sx={{ color: '#5d4037', mb: 1 }}>
+                                  {item.product_data.nombre}
+                                </Typography>
+                                <Chip 
+                                  label={`Talla ${item.talla_seleccionada}`}
+                                  size="small"
+                                  sx={{
+                                    background: '#e8dcc8',
+                                    color: '#8B7355',
+                                    fontWeight: '600'
+                                  }}
+                                />
+                              </Box>
+                              
+                              <IconButton
+                                onClick={() => handleRemoveItem(item.id)}
                                 sx={{
-                                  background: '#e8dcc8',
-                                  color: '#8B7355',
-                                  fontWeight: '600'
+                                  color: '#d32f2f',
+                                  background: 'rgba(211, 47, 47, 0.1)',
+                                  '&:hover': {
+                                    background: 'rgba(211, 47, 47, 0.2)',
+                                    transform: 'scale(1.1)'
+                                  },
+                                  transition: 'all 0.2s ease'
                                 }}
-                              />
+                              >
+                                <Delete />
+                              </IconButton>
                             </Box>
-                            
-                            <IconButton
-                              onClick={() => handleRemoveItem(item.id)}
-                              sx={{
-                                color: '#d32f2f',
-                                background: 'rgba(211, 47, 47, 0.1)',
-                                '&:hover': {
-                                  background: 'rgba(211, 47, 47, 0.2)',
-                                  transform: 'scale(1.1)'
-                                },
-                                transition: 'all 0.2s ease'
-                              }}
-                            >
-                              <Delete />
-                            </IconButton>
-                          </Box>
 
-                          {/* Precio y cantidad */}
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography variant="h5" fontWeight="700" sx={{ color: '#A0522D' }}>
-                              Q{(item.product_data.precio * item.cantidad).toLocaleString()}
-                            </Typography>
-                            
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                              <Typography variant="body2" sx={{ color: '#8B7355', fontWeight: '600' }}>
-                                Q{item.product_data.precio.toLocaleString()} c/u
+                            {/* Precio y cantidad */}
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Typography variant="h5" fontWeight="700" sx={{ color: '#A0522D' }}>
+                                Q{(item.product_data.precio * item.cantidad).toLocaleString()}
                               </Typography>
                               
-                              <Box sx={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: 1,
-                                background: '#fffdf9',
-                                borderRadius: 2,
-                                padding: '4px 8px',
-                                border: '1px solid #e8dcc8'
-                              }}>
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleUpdateQuantity(item.id, item.cantidad - 1)}
-                                  disabled={item.cantidad <= 1}
-                                  sx={{
-                                    color: '#8B7355',
-                                    '&:hover': {
-                                      background: 'rgba(139, 115, 85, 0.1)'
-                                    },
-                                    '&:disabled': {
-                                      color: '#e8dcc8'
-                                    }
-                                  }}
-                                >
-                                  <Remove fontSize="small" />
-                                </IconButton>
-                                
-                                <Typography 
-                                  variant="body1" 
-                                  fontWeight="600" 
-                                  sx={{ 
-                                    minWidth: '30px', 
-                                    textAlign: 'center',
-                                    color: '#5d4037'
-                                  }}
-                                >
-                                  {item.cantidad}
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <Typography variant="body2" sx={{ color: '#8B7355', fontWeight: '600' }}>
+                                  Q{item.product_data.precio.toLocaleString()} c/u
                                 </Typography>
                                 
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleUpdateQuantity(item.id, item.cantidad + 1)}
-                                  sx={{
-                                    color: '#8B7355',
-                                    '&:hover': {
-                                      background: 'rgba(139, 115, 85, 0.1)'
-                                    }
-                                  }}
-                                >
-                                  <Add fontSize="small" />
-                                </IconButton>
+                                <Box sx={{ 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  gap: 1,
+                                  background: '#fffdf9',
+                                  borderRadius: 2,
+                                  padding: '4px 8px',
+                                  border: '1px solid #e8dcc8'
+                                }}>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleUpdateQuantity(item.id, item.cantidad - 1)}
+                                    disabled={item.cantidad <= 1}
+                                    sx={{
+                                      color: '#8B7355',
+                                      '&:hover': {
+                                        background: 'rgba(139, 115, 85, 0.1)'
+                                      },
+                                      '&:disabled': {
+                                        color: '#e8dcc8'
+                                      }
+                                    }}
+                                  >
+                                    <Remove fontSize="small" />
+                                  </IconButton>
+                                  
+                                  <Typography 
+                                    variant="body1" 
+                                    fontWeight="600" 
+                                    sx={{ 
+                                      minWidth: '30px', 
+                                      textAlign: 'center',
+                                      color: '#5d4037'
+                                    }}
+                                  >
+                                    {item.cantidad}
+                                  </Typography>
+                                  
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleUpdateQuantity(item.id, item.cantidad + 1)}
+                                    sx={{
+                                      color: '#8B7355',
+                                      '&:hover': {
+                                        background: 'rgba(139, 115, 85, 0.1)'
+                                      }
+                                    }}
+                                  >
+                                    <Add fontSize="small" />
+                                  </IconButton>
+                                </Box>
                               </Box>
                             </Box>
                           </Box>
                         </Box>
-                      </Box>
-                    </Card>
-                  ))}
+                      </Card>
+                    );
+                  })}
                 </Box>
 
                 {/* Resumen de compra */}

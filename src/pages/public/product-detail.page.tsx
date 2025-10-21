@@ -112,6 +112,7 @@ const ProductDetailPage = () => {
   const handleAddToCart = async () => {
     if (!product || !selectedSize) return;
     if (status === 'loading') return;
+    // Guardar también fotos en el localStorage para usuarios no logueados
     if (!signInCheckResult?.signedIn) {
       localStorage.setItem('pendingCartItem', JSON.stringify({
         id_producto: product.id,
@@ -120,7 +121,8 @@ const ProductDetailPage = () => {
         product_data: {
           nombre: product.nombre,
           precio: product.precio,
-          imagen: product.imagen
+          imagen: product.imagen,
+          fotos: product.fotos // Guardar el array de fotos
         }
       }));
       navigate('/auth/login', { state: { redirectTo: '/cart' } });
@@ -139,7 +141,8 @@ const ProductDetailPage = () => {
         product_data: {
           nombre: product.nombre,
           precio: product.precio,
-          imagen: product.imagen
+          imagen: product.imagen,
+          fotos: product.fotos // Guardar el array de fotos
         }
       });
       navigate("/cart");
