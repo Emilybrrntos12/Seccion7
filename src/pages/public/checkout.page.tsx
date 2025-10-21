@@ -635,6 +635,19 @@ const CheckoutPage = () => {
                             />
                           </RadioGroup>
                         </FormControl>
+                        {/* Mostrar datos bancarios si el método es transferencia */}
+                        {metodoPago === 'transferencia' && (
+                          <Box sx={{ mt: 3, p: 3, border: '2px solid #8B7355', borderRadius: 3, background: '#f9f6f2' }}>
+                            <Typography variant="subtitle1" fontWeight="700" sx={{ color: '#8B7355', mb: 1 }}>
+                              Datos para Transferencia Bancaria
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: '#5d4037' }}>
+                              <b>Banco:</b> Banco Industrial<br />
+                              <b>No. de cuenta:</b> 123-456789-0<br />
+                              <b>Nombre:</b> Emily Barrientos
+                            </Typography>
+                          </Box>
+                        )}
                       </Box>
 
                       <Box sx={{ display: 'flex', gap: 2 }}>
