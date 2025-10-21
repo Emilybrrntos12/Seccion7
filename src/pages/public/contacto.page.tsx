@@ -60,7 +60,7 @@ export const Contacto: React.FC = () => {
     <>
       <Header />
       <section className="bg-[#f5ecd7] py-12 px-4 min-h-screen">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto pt-20">
           <h1 className="text-3xl md:text-4xl font-bold text-[#8d6748] mb-4 text-center">Contacto</h1>
           <p className="text-lg text-[#5d4037] mb-8 text-center">
             ¿Tienes dudas, comentarios o quieres conocer más sobre <span className="font-semibold">Calzado Santa Catarina Mita</span>? Escríbenos y te responderemos pronto.
