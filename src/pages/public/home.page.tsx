@@ -200,7 +200,7 @@ const HomePage = () => {
                       <h2 className="font-bold text-lg text-[#8B7355] group-hover:text-[#A0522D] transition-colors line-clamp-2">
                         {product.nombre}
                       </h2>
-                      <p className="text-[#A0522D] font-bold text-xl ml-2">${product.precio}</p>
+                      <p className="text-[#A0522D] font-bold text-xl ml-2">Q{product.precio}</p>
                     </div>
                     
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
