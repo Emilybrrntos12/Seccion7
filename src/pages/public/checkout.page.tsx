@@ -27,15 +27,14 @@ import {
 import {
   LocalShipping,
   Payment,
-  Person,
   LocationOn,
   Phone,
   Email,
-  CheckCircle,
   ArrowBack,
-  ShoppingBag
+  ShoppingBag,
+  Receipt,
+  ArrowForward
 } from "@mui/icons-material";
-import { EncuestaCompra } from "./encuesta.page";
 
 type CartItem = {
   id: string;
@@ -51,7 +50,7 @@ type CartItem = {
   };
 };
 
-const steps = ['Carrito', 'Envío y Pago', 'Confirmación'];
+const steps = ['Carrito', 'Envío', 'Pago', 'Confirmación'];
 
 const CheckoutPage = () => {
   const { data: user } = useUser();
@@ -64,13 +63,13 @@ const CheckoutPage = () => {
   const [metodoPago, setMetodoPago] = useState("efectivo");
   const [notas, setNotas] = useState("");
   const [confirmado, setConfirmado] = useState(false);
-  const [orderId, setOrderId] = useState("");
   const [activeStep, setActiveStep] = useState(1);
+  const [orderId, setOrderId] = useState<string | null>(null);
 
   const total = cartItems.reduce((acc, item) => acc + item.product_data.precio * item.cantidad, 0);
   const itemsCount = cartItems.reduce((acc, item) => acc + item.cantidad, 0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmitPago = (e: React.FormEvent) => {
     e.preventDefault();
     (async () => {
       try {
@@ -99,8 +98,9 @@ const CheckoutPage = () => {
           estado: 'pendiente',
         };
 
-        const orderDoc = await addDoc(collection(firestore, 'orders'), pedido);
-        const orderId = orderDoc.id;
+  const orderDoc = await addDoc(collection(firestore, 'orders'), pedido);
+  const newOrderId = orderDoc.id;
+  setOrderId(newOrderId);
 
         for (const item of cartItems) {
           const productoRef = doc(firestore, 'products', item.id_producto);
@@ -205,7 +205,7 @@ const CheckoutPage = () => {
         }).then(async result => {
           if (result.isConfirmed && result.value) {
             await addDoc(collection(firestore, "encuestas"), {
-              orderId,
+              orderId: newOrderId,
               userId: user?.uid,
               confianza: result.value.confianza,
               recomienda: result.value.recomienda,
@@ -221,10 +221,8 @@ const CheckoutPage = () => {
             });
           }
         });
-
-        setOrderId(orderId);
         setConfirmado(true);
-        setActiveStep(2);
+        setActiveStep(3);
       } catch {
         Swal.fire({
           icon: 'error',
@@ -235,6 +233,26 @@ const CheckoutPage = () => {
         });
       }
     })();
+  };
+
+  const handleContinuarAPago = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validar campos de envío
+    if (!nombre || !direccion || !telefono) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor completa todos los campos de envío antes de continuar.',
+        background: '#fffdf9',
+        color: '#5d4037'
+      });
+      return;
+    }
+    setActiveStep(2);
+  };
+
+  const handleVolverAEnvio = () => {
+    setActiveStep(1);
   };
 
   if (cartItems.length === 0 && !confirmado) {
@@ -319,15 +337,24 @@ const CheckoutPage = () => {
             Finalizar Compra
           </Typography>
           
-          <Stepper activeStep={activeStep} sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}>
-            {steps.map((label) => (
+          <Stepper activeStep={activeStep} sx={{ mb: 4, maxWidth: 700, mx: 'auto' }}>
+            {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel sx={{ 
-                  '& .MuiStepLabel-label': { 
-                    color: '#8B7355',
-                    fontWeight: '600'
-                  } 
-                }}>
+                <StepLabel 
+                  icon={
+                    index === 0 ? <ShoppingBag sx={{ color: activeStep >= index ? '#A0522D' : '#e8dcc8' }} /> :
+                    index === 1 ? <LocalShipping sx={{ color: activeStep >= index ? '#A0522D' : '#e8dcc8' }} /> :
+                    index === 2 ? <Payment sx={{ color: activeStep >= index ? '#A0522D' : '#e8dcc8' }} /> :
+                    <Receipt sx={{ color: activeStep >= index ? '#A0522D' : '#e8dcc8' }} />
+                  }
+                  sx={{ 
+                    '& .MuiStepLabel-label': { 
+                      color: activeStep >= index ? '#8B7355' : '#e8dcc8',
+                      fontWeight: '600',
+                      fontSize: '0.9rem'
+                    } 
+                  }}
+                >
                   {label}
                 </StepLabel>
               </Step>
@@ -336,7 +363,7 @@ const CheckoutPage = () => {
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 4 }}>
-          {/* Formulario de Checkout */}
+          {/* Formulario Principal */}
           <Box sx={{ flex: 1 }}>
             <Card sx={{ 
               background: 'white',
@@ -346,164 +373,283 @@ const CheckoutPage = () => {
               overflow: 'hidden'
             }}>
               <CardContent sx={{ p: 4 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-                  <Person sx={{ color: '#8B7355', fontSize: 32 }} />
-                  <Typography variant="h5" fontWeight="700" sx={{ color: '#5d4037' }}>
-                    Información de Envío
-                  </Typography>
-                </Box>
 
-                <form onSubmit={handleSubmit}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <TextField
-                      label="Nombre completo"
-                      value={nombre}
-                      onChange={(e) => setNombre(e.target.value)}
-                      fullWidth
-                      required
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:hover fieldset': { borderColor: '#8B7355' }
-                        }
-                      }}
-                    />
-                    
-                    <TextField
-                      label="Dirección de envío"
-                      value={direccion}
-                      onChange={(e) => setDireccion(e.target.value)}
-                      fullWidth
-                      required
-                      InputProps={{
-                        startAdornment: <LocationOn sx={{ color: '#8B7355', mr: 1 }} />
-                      }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:hover fieldset': { borderColor: '#8B7355' }
-                        }
-                      }}
-                    />
-                    
-                    <TextField
-                      label="Teléfono de contacto"
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value)}
-                      fullWidth
-                      required
-                      InputProps={{
-                        startAdornment: <Phone sx={{ color: '#8B7355', mr: 1 }} />
-                      }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:hover fieldset': { borderColor: '#8B7355' }
-                        }
-                      }}
-                    />
-                    
-                    <TextField
-                      label="Email"
-                      value={user?.email || ""}
-                      disabled
-                      fullWidth
-                      InputProps={{
-                        startAdornment: <Email sx={{ color: '#8B7355', mr: 1 }} />
-                      }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                        }
-                      }}
-                    />
+                {/* SECCIÓN DE ENVÍO (Paso 1) */}
+                {activeStep === 1 && (
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+                      <LocalShipping sx={{ color: '#8B7355', fontSize: 32 }} />
+                      <Typography variant="h5" fontWeight="700" sx={{ color: '#5d4037' }}>
+                        Información de Envío
+                      </Typography>
+                    </Box>
 
-                    <FormControl sx={{ mt: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                        <Payment sx={{ color: '#8B7355', fontSize: 32 }} />
-                        <Typography variant="h6" fontWeight="600" sx={{ color: '#5d4037' }}>
-                          Método de Pago
-                        </Typography>
+                    <form onSubmit={handleContinuarAPago}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <TextField
+                          label="Nombre completo"
+                          value={nombre}
+                          onChange={(e) => setNombre(e.target.value)}
+                          fullWidth
+                          required
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2,
+                              '&:hover fieldset': { borderColor: '#8B7355' }
+                            }
+                          }}
+                        />
+                        
+                        <TextField
+                          label="Dirección de envío"
+                          value={direccion}
+                          onChange={(e) => setDireccion(e.target.value)}
+                          fullWidth
+                          required
+                          InputProps={{
+                            startAdornment: <LocationOn sx={{ color: '#8B7355', mr: 1 }} />
+                          }}
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2,
+                              '&:hover fieldset': { borderColor: '#8B7355' }
+                            }
+                          }}
+                        />
+                        
+                        <TextField
+                          label="Teléfono de contacto"
+                          value={telefono}
+                          onChange={(e) => setTelefono(e.target.value)}
+                          fullWidth
+                          required
+                          InputProps={{
+                            startAdornment: <Phone sx={{ color: '#8B7355', mr: 1 }} />
+                          }}
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2,
+                              '&:hover fieldset': { borderColor: '#8B7355' }
+                            }
+                          }}
+                        />
+                        
+                        <TextField
+                          label="Email"
+                          value={user?.email || ""}
+                          disabled
+                          fullWidth
+                          InputProps={{
+                            startAdornment: <Email sx={{ color: '#8B7355', mr: 1 }} />
+                          }}
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2,
+                            }
+                          }}
+                        />
+
+                        <TextField
+                          label="Notas para el pedido (opcional)"
+                          value={notas}
+                          onChange={(e) => setNotas(e.target.value)}
+                          fullWidth
+                          multiline
+                          rows={3}
+                          placeholder="Instrucciones especiales para la entrega, horarios preferidos, etc..."
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2,
+                              '&:hover fieldset': { borderColor: '#8B7355' }
+                            }
+                          }}
+                        />
+
+                        <Button 
+                          type="submit"
+                          variant="contained" 
+                          size="large"
+                          sx={{
+                            background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
+                            color: 'white',
+                            borderRadius: 3,
+                            padding: '16px',
+                            fontWeight: 600,
+                            fontSize: '1.1rem',
+                            mt: 2,
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #A0522D 0%, #8B7355 100%)',
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 8px 25px rgba(139, 115, 85, 0.3)'
+                            }
+                          }}
+                          endIcon={<ArrowForward />}
+                        >
+                          Continuar al Pago
+                        </Button>
                       </Box>
-                      <RadioGroup
-                        value={metodoPago}
-                        onChange={(e) => setMetodoPago(e.target.value)}
-                      >
-                        <FormControlLabel 
-                          value="efectivo" 
-                          control={<Radio sx={{ color: '#8B7355' }} />} 
-                          label={
-                            <Box>
-                              <Typography fontWeight="600" sx={{ color: '#5d4037' }}>
-                                Efectivo contra entrega
-                              </Typography>
-                              <Typography variant="body2" sx={{ color: '#8B7355' }}>
-                                Paga cuando recibas tu pedido
-                              </Typography>
-                            </Box>
-                          } 
-                        />
-                        <FormControlLabel 
-                          value="transferencia" 
-                          control={<Radio sx={{ color: '#8B7355' }} />} 
-                          label={
-                            <Box>
-                              <Typography fontWeight="600" sx={{ color: '#5d4037' }}>
-                                Transferencia bancaria
-                              </Typography>
-                              <Typography variant="body2" sx={{ color: '#8B7355' }}>
-                                Realiza el pago por transferencia
-                              </Typography>
-                            </Box>
-                          } 
-                        />
-                      </RadioGroup>
-                    </FormControl>
-
-                    <TextField
-                      label="Notas para el pedido (opcional)"
-                      value={notas}
-                      onChange={(e) => setNotas(e.target.value)}
-                      fullWidth
-                      multiline
-                      rows={3}
-                      placeholder="Instrucciones especiales para la entrega..."
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:hover fieldset': { borderColor: '#8B7355' }
-                        }
-                      }}
-                    />
-
-                    <Button 
-                      type="submit" 
-                      variant="contained" 
-                      size="large"
-                      sx={{
-                        background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
-                        color: 'white',
-                        borderRadius: 3,
-                        padding: '16px',
-                        fontWeight: 600,
-                        fontSize: '1.1rem',
-                        mt: 2,
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #A0522D 0%, #8B7355 100%)',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 8px 25px rgba(139, 115, 85, 0.3)'
-                        }
-                      }}
-                    >
-                      Confirmar Pedido
-                    </Button>
+                    </form>
                   </Box>
-                </form>
+                )}
+
+                {/* SECCIÓN DE PAGO (Paso 2) */}
+                {activeStep === 2 && (
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+                      <Payment sx={{ color: '#8B7355', fontSize: 32 }} />
+                      <Typography variant="h5" fontWeight="700" sx={{ color: '#5d4037' }}>
+                        Método de Pago
+                      </Typography>
+                    </Box>
+
+                    <form onSubmit={handleSubmitPago}>
+                      <Box sx={{ mb: 4 }}>
+                        <FormControl sx={{ width: '100%' }}>
+                          <RadioGroup
+                            value={metodoPago}
+                            onChange={(e) => setMetodoPago(e.target.value)}
+                          >
+                            <FormControlLabel 
+                              value="efectivo" 
+                              control={<Radio sx={{ color: '#8B7355' }} />} 
+                              label={
+                                <Box sx={{ p: 2, border: '2px solid', borderColor: metodoPago === 'efectivo' ? '#8B7355' : '#e8dcc8', borderRadius: 2, width: '100%' }}>
+                                  <Typography fontWeight="600" sx={{ color: '#5d4037' }}>
+                                    Efectivo contra entrega
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ color: '#8B7355' }}>
+                                    Paga cuando recibas tu pedido
+                                  </Typography>
+                                </Box>
+                              } 
+                              sx={{ width: '100%', ml: 0, mr: 0, mb: 2 }}
+                            />
+                            <FormControlLabel 
+                              value="transferencia" 
+                              control={<Radio sx={{ color: '#8B7355' }} />} 
+                              label={
+                                <Box sx={{ p: 2, border: '2px solid', borderColor: metodoPago === 'transferencia' ? '#8B7355' : '#e8dcc8', borderRadius: 2, width: '100%' }}>
+                                  <Typography fontWeight="600" sx={{ color: '#5d4037' }}>
+                                    Transferencia bancaria
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ color: '#8B7355' }}>
+                                    Realiza el pago por transferencia
+                                  </Typography>
+                                </Box>
+                              } 
+                              sx={{ width: '100%', ml: 0, mr: 0 }}
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                      </Box>
+
+                      <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button 
+                          variant="outlined"
+                          onClick={handleVolverAEnvio}
+                          sx={{
+                            borderColor: '#8B7355',
+                            color: '#8B7355',
+                            borderRadius: 3,
+                            padding: '16px',
+                            fontWeight: 600,
+                            flex: 1,
+                            '&:hover': {
+                              borderColor: '#A0522D',
+                              background: 'rgba(139, 115, 85, 0.04)',
+                              transform: 'translateY(-2px)'
+                            }
+                          }}
+                        >
+                          Volver a Envío
+                        </Button>
+
+                        <Button 
+                          type="submit"
+                          variant="contained" 
+                          size="large"
+                          sx={{
+                            background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
+                            color: 'white',
+                            borderRadius: 3,
+                            padding: '16px',
+                            fontWeight: 600,
+                            fontSize: '1.1rem',
+                            flex: 2,
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #A0522D 0%, #8B7355 100%)',
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 8px 25px rgba(139, 115, 85, 0.3)'
+                            }
+                          }}
+                        >
+                          Confirmar Pedido
+                        </Button>
+                      </Box>
+                    </form>
+                  </Box>
+                )}
+
+                {/* SECCIÓN DE CONFIRMACIÓN (Paso 3) */}
+                {activeStep === 3 && (
+                  <Card sx={{ mt: 4, background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)', border: '2px solid #4caf50', borderRadius: 4 }}>
+                    <CardContent sx={{ p: 4, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight="700" sx={{ color: '#2e7d32', mb: 2 }}>
+                        ¡Pedido Realizado con Éxito!
+                      </Typography>
+                      <Typography variant="h6" sx={{ color: '#5d4037', mb: 3 }}>
+                        Te contactaremos pronto para coordinar la entrega de tu pedido.
+                      </Typography>
+                      <Divider sx={{ my: 3 }} />
+                      <Typography variant="h6" fontWeight="600" sx={{ color: '#8B7355', mb: 2 }}>
+                        Orden de Compra
+                      </Typography>
+                      <Box sx={{ textAlign: 'left', maxWidth: 500, mx: 'auto', mb: 3 }}>
+                        <Typography variant="body1" sx={{ mb: 1 }}><b>Número de pedido:</b> {orderId || 'N/A'}</Typography>
+                        <Typography variant="body1" sx={{ mb: 1 }}><b>Nombre:</b> {nombre}</Typography>
+                        <Typography variant="body1" sx={{ mb: 1 }}><b>Dirección:</b> {direccion}</Typography>
+                        <Typography variant="body1" sx={{ mb: 1 }}><b>Teléfono:</b> {telefono}</Typography>
+                        <Typography variant="body1" sx={{ mb: 1 }}><b>Email:</b> {user?.email}</Typography>
+                        <Typography variant="body1" sx={{ mb: 1 }}><b>Método de pago:</b> {metodoPago === 'efectivo' ? 'Efectivo contra entrega' : 'Transferencia bancaria'}</Typography>
+                      </Box>
+                      <Divider sx={{ my: 2 }} />
+                      <Typography variant="h6" fontWeight="600" sx={{ color: '#8B7355', mb: 2 }}>Productos</Typography>
+                      <List sx={{ maxWidth: 500, mx: 'auto', mb: 2 }}>
+                        {cartItems.map((item) => (
+                          <ListItem key={item.id} sx={{ px: 0, py: 1 }}>
+                            <ListItemText
+                              primary={<>
+                                <b>{item.product_data.nombre}</b> (Talla {item.talla_seleccionada})
+                              </>}
+                              secondary={<>
+                                Cantidad: {item.cantidad} &nbsp;|&nbsp; Q{item.product_data.precio} c/u
+                              </>}
+                            />
+                            <Typography fontWeight="600" sx={{ color: '#5d4037', minWidth: 80, textAlign: 'right' }}>
+                              Q{(item.product_data.precio * item.cantidad).toLocaleString()}
+                            </Typography>
+                          </ListItem>
+                        ))}
+                      </List>
+                      <Divider sx={{ my: 2 }} />
+                      <Typography variant="h5" fontWeight="700" sx={{ color: '#A0522D', mb: 2 }}>
+                        Total: Q{total.toLocaleString()}
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        sx={{ mt: 2, background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)' }}
+                        onClick={() => navigate('/')}
+                      >
+                        Volver al inicio
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
               </CardContent>
             </Card>
           </Box>
 
-          {/* Resumen del Pedido */}
+          {/* Resumen del Pedido (Siempre visible) */}
           <Box sx={{ width: { xs: '100%', lg: '400px' } }}>
             <Card sx={{ 
               position: 'sticky', 
@@ -629,30 +775,6 @@ const CheckoutPage = () => {
             </Paper>
           </Box>
         </Box>
-
-        {/* Confirmación de pedido */}
-        {confirmado && (
-          <Card sx={{ 
-            mt: 4, 
-            background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
-            border: '2px solid #4caf50',
-            borderRadius: 4
-          }}>
-            <CardContent sx={{ p: 4, textAlign: 'center' }}>
-              <CheckCircle sx={{ fontSize: 64, color: '#4caf50', mb: 3 }} />
-              <Typography variant="h4" fontWeight="700" sx={{ color: '#2e7d32', mb: 2 }}>
-                ¡Pedido Realizado con Éxito!
-              </Typography>
-              <Typography variant="h6" sx={{ color: '#5d4037', mb: 3 }}>
-                Te contactaremos pronto para coordinar la entrega de tu pedido #{orderId}
-              </Typography>
-              
-              <Box sx={{ mt: 4 }}>
-                <EncuestaCompra orderId={orderId} />
-              </Box>
-            </CardContent>
-          </Card>
-        )}
       </Box>
     </Box>
   );
