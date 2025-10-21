@@ -31,6 +31,7 @@ const Header: React.FC = () => {
   const [search, setSearch] = React.useState("");
   React.useEffect(() => {
     localStorage.setItem("searchText", search);
+    window.dispatchEvent(new Event("storage")); // Notifica el cambio a otros componentes
   }, [search]);
 
   return (

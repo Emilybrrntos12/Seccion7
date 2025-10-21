@@ -63,11 +63,13 @@ const HomePage = () => {
   }, [app]);
   
   // Filtrar productos por nombre, descripción y filtros avanzados
+  const normalize = (str: string) =>
+  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const filteredProducts = products.filter(product => {
-    const text = search.toLowerCase();
+    const text = normalize(search);
     const matchText =
-      product.nombre.toLowerCase().includes(text) ||
-      product.descripcion.toLowerCase().includes(text);
+      normalize(product.nombre).includes(text) ||
+      normalize(product.descripcion).includes(text);
     const matchCategoria = categoria ? product.categoria === categoria : true;
     const matchTalla = talla ? (product.tallaDisponible || []).includes(talla) : true;
     const matchGenero = genero ? product.genero === genero : true;
@@ -116,13 +118,7 @@ const HomePage = () => {
 
           
           {/* Resultados de búsqueda */}
-          {search && (
-            <div className="mb-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 inline-block">
-              <h2 className="text-xl font-semibold text-[#8B7355]">
-                Resultados para: <span className="text-[#A0522D]">"{search}"</span>
-              </h2>
-            </div>
-          )}
+
           
           {/* Estado de carga */}
           {loading && (
