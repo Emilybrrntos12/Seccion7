@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useUser } from "reactfire";
 import { useLocation, useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   Box,
   Card,
@@ -68,6 +70,83 @@ const CheckoutPage = () => {
 
   const total = cartItems.reduce((acc, item) => acc + item.product_data.precio * item.cantidad, 0);
   const itemsCount = cartItems.reduce((acc, item) => acc + item.cantidad, 0);
+
+  // Función para imprimir la orden como PDF (cuadro de impresión en la misma ventana)
+  const handlePrintPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Orden de Compra", 14, 22);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Número de pedido: ${orderId || 'N/A'}`, 14, 35);
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-GT')}`, 14, 42);
+    doc.setFont("helvetica", "bold");
+    doc.text("Información del Cliente:", 14, 55);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Nombre: ${nombre}`, 14, 62);
+    doc.text(`Dirección: ${direccion}`, 14, 69);
+    doc.text(`Teléfono: ${telefono}`, 14, 76);
+    doc.text(`Email: ${user?.email || 'N/A'}`, 14, 83);
+    doc.text(`Método de pago: ${metodoPago === 'efectivo' ? 'Efectivo contra entrega' : 'Transferencia bancaria'}`, 14, 90);
+    doc.setFont("helvetica", "bold");
+    doc.text("Productos:", 14, 103);
+    autoTable(doc, {
+      startY: 107,
+      head: [["Producto", "Talla", "Cantidad", "Precio Unitario", "Subtotal"]],
+      body: cartItems.map((item: CartItem) => [
+        item.product_data.nombre,
+        item.talla_seleccionada,
+        item.cantidad.toString(),
+        `Q${item.product_data.precio.toLocaleString()}`,
+        `Q${(item.product_data.precio * item.cantidad).toLocaleString()}`
+      ]),
+      theme: 'grid',
+      headStyles: { 
+        fillColor: [139, 115, 85],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold'
+      },
+      styles: { 
+        fontSize: 10,
+        cellPadding: 3
+      },
+      columnStyles: {
+        0: { cellWidth: 60 },
+        1: { cellWidth: 25 },
+        2: { cellWidth: 25 },
+        3: { cellWidth: 35 },
+        4: { cellWidth: 35 }
+      }
+    });
+    // @ts-expect-error: lastAutoTable es una propiedad agregada por jsPDF-AutoTable
+    const finalY = doc.lastAutoTable?.finalY || 130;
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Total: Q${total.toLocaleString()}`, 14, finalY + 15);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Gracias por su compra. Te contactaremos pronto para coordinar la entrega.", 14, finalY + 30);
+
+    // Imprimir en la misma ventana usando un iframe oculto
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    let printIframe = document.getElementById('pdf-print-iframe') as HTMLIFrameElement | null;
+    if (!printIframe) {
+      printIframe = document.createElement('iframe');
+      printIframe.style.display = 'none';
+      printIframe.id = 'pdf-print-iframe';
+      document.body.appendChild(printIframe);
+    }
+    printIframe.src = url;
+    printIframe.onload = function () {
+      setTimeout(() => {
+        printIframe?.contentWindow?.focus();
+        printIframe?.contentWindow?.print();
+        URL.revokeObjectURL(url);
+      }, 500);
+    };
+  };
 
   const handleSubmitPago = (e: React.FormEvent) => {
     e.preventDefault();
@@ -635,13 +714,35 @@ const CheckoutPage = () => {
                       <Typography variant="h5" fontWeight="700" sx={{ color: '#A0522D', mb: 2 }}>
                         Total: Q{total.toLocaleString()}
                       </Typography>
-                      <Button
-                        variant="contained"
-                        sx={{ mt: 2, background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)' }}
-                        onClick={() => navigate('/')}
-                      >
-                        Volver al inicio
-                      </Button>
+                      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: 'center', mt: 2 }}>
+                        <Button
+                          variant="outlined"
+                          sx={{ 
+                            borderColor: '#8B7355', 
+                            color: '#8B7355', 
+                            fontWeight: 600,
+                            '&:hover': {
+                              borderColor: '#A0522D',
+                              background: 'rgba(139, 115, 85, 0.04)'
+                            }
+                          }}
+                          onClick={handlePrintPDF}
+                        >
+                          Imprimir Orden
+                        </Button>
+                        <Button
+                          variant="contained"
+                          sx={{ 
+                            background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #A0522D 0%, #8B7355 100%)'
+                            }
+                          }}
+                          onClick={() => navigate('/')}
+                        >
+                          Volver al inicio
+                        </Button>
+                      </Box>
                     </CardContent>
                   </Card>
                 )}
