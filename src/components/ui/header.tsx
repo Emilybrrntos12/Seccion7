@@ -88,27 +88,27 @@ const Header: React.FC = () => {
         {/* Menú principal - ocultar en xs */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
           {menuItems.map((item) => (
-            <Button
-              key={item.label}
-              color="inherit"
-              onClick={() => navigate(item.path)}
-              sx={{ 
-                fontWeight: 600, 
-                textTransform: "none", 
-                fontSize: "0.95rem",
-                color: '#8B7355',
-                borderRadius: 2,
-                px: 2,
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  background: 'rgba(139, 115, 85, 0.08)',
-                  color: '#A0522D',
-                  transform: 'translateY(-1px)'
-                }
-              }}
-            >
-              {item.label}
-            </Button>
+    <Button
+      key={item.label}
+      color="inherit"
+      onClick={() => navigate(item.path)}
+      sx={{ 
+        fontWeight: 600, 
+        textTransform: "none", 
+        fontSize: "0.95rem",
+        color: '#ffff', // Cambiado a blanco
+        borderRadius: 2,
+        px: 2,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          background: 'rgba(255, 255, 255, 0.1)', // Fondo más claro al hover
+          color: '#ffffff', // Mantener blanco en hover
+          transform: 'translateY(-1px)'
+        }
+      }}
+    >
+      {item.label}
+    </Button>
           ))}
         </Box>
 
