@@ -592,8 +592,8 @@ const NewProductPage = () => {
                             required
                             sx={{ borderRadius: 2 }}
                           >
-                            <MenuItem value="Cuero">Cuero Genuino</MenuItem>
-                            <MenuItem value="Sintético">Material Sintético</MenuItem>
+                            <MenuItem value="Cuero">Cuero</MenuItem>
+                            <MenuItem value="Sintético">Sintético</MenuItem>
                             <MenuItem value="Polipiel">Polipiel</MenuItem>
                             <MenuItem value="Charol">Charol</MenuItem>
                           </Select>
