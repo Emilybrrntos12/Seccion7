@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 
-// Paleta de colores tierra
 const palette = {
   primary: "#8B7355",
   secondary: "#A0522D",
@@ -24,51 +23,33 @@ const SidebarOrderStats = ({ totalOrders, pendingOrders }: SidebarOrderStatsProp
   return (
     <Box 
       sx={{ 
-        p: 2, 
-        mx: 2,
-        mb: 1,
-        borderRadius: 3,
-        background: `linear-gradient(135deg, ${palette.light}15 0%, ${palette.background} 100%)`,
-        border: `2px solid ${palette.light}`,
+        p: 1.5,
+        m: 1,
+        borderRadius: 2,
+        backgroundColor: palette.background,
+        border: `1px solid ${palette.light}`,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        boxShadow: '0 4px 12px rgba(139, 115, 85, 0.08)',
-        position: 'relative',
-        overflow: 'hidden',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '2px',
-          background: `linear-gradient(90deg, ${palette.primary} 0%, ${palette.secondary} 100%)`,
-        }
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        minWidth: '200px'
       }}
     >
-      {/* Total de Pedidos */}
-      <Box sx={{ textAlign: 'center', flex: 1, position: 'relative' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-          <Box
-            sx={{
-              p: 0.8,
-              borderRadius: '50%',
-              bgcolor: `${palette.primary}20`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 1
-            }}
-          >
-            <ShoppingBagIcon sx={{ fontSize: 18, color: palette.primary }} />
-          </Box>
+      {/* Total Orders */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <ShoppingBagIcon 
+            sx={{ 
+              fontSize: 18, 
+              color: palette.primary 
+            }} 
+          />
           <Typography 
             variant="h6" 
-            fontWeight="800" 
             sx={{ 
-              color: palette.dark,
-              fontSize: '1.4rem'
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              color: palette.dark
             }}
           >
             {totalOrders}
@@ -76,55 +57,41 @@ const SidebarOrderStats = ({ totalOrders, pendingOrders }: SidebarOrderStatsProp
         </Box>
         <Typography 
           variant="caption" 
-          fontWeight="600" 
           sx={{ 
             color: palette.primary,
-            fontSize: '0.75rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
+            fontSize: '0.7rem',
+            fontWeight: '500'
           }}
         >
           Total
         </Typography>
       </Box>
 
-      {/* Separador vertical */}
+      {/* Divider */}
       <Box 
         sx={{ 
           width: '1px', 
-          height: 40, 
+          height: '30px', 
           backgroundColor: palette.light,
           mx: 1
         }} 
       />
 
-      {/* Pedidos Pendientes */}
-      <Box sx={{ textAlign: 'center', flex: 1, position: 'relative' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-          <Box
-            sx={{
-              p: 0.8,
-              borderRadius: '50%',
-              bgcolor: `${pendingOrders > 0 ? palette.warning : palette.primary}20`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 1
-            }}
-          >
-            <PendingActionsIcon 
-              sx={{ 
-                fontSize: 18, 
-                color: pendingOrders > 0 ? palette.warning : palette.primary 
-              }} 
-            />
-          </Box>
+      {/* Pending Orders */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <PendingActionsIcon 
+            sx={{ 
+              fontSize: 18, 
+              color: pendingOrders > 0 ? palette.warning : palette.primary 
+            }} 
+          />
           <Typography 
             variant="h6" 
-            fontWeight="800" 
             sx={{ 
-              color: pendingOrders > 0 ? palette.warning : palette.dark,
-              fontSize: '1.4rem'
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              color: pendingOrders > 0 ? palette.warning : palette.dark
             }}
           >
             {pendingOrders}
@@ -132,12 +99,10 @@ const SidebarOrderStats = ({ totalOrders, pendingOrders }: SidebarOrderStatsProp
         </Box>
         <Typography 
           variant="caption" 
-          fontWeight="600" 
           sx={{ 
             color: pendingOrders > 0 ? palette.warning : palette.primary,
-            fontSize: '0.75rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
+            fontSize: '0.7rem',
+            fontWeight: '500'
           }}
         >
           Pendientes
