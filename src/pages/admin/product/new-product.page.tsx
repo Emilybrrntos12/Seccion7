@@ -204,8 +204,8 @@ const NewProductPage = () => {
       toast.error("⚠️ Debes seleccionar al menos una talla");
       return;
     }
-    if (imagenes.length < 4) {
-      toast.error("⚠️ Debes seleccionar al menos 4 imágenes del producto");
+    if (imagenes.length < 2) {
+      toast.error("⚠️ Debes seleccionar al menos 2 imágenes del producto");
       return;
     }
     
@@ -226,7 +226,7 @@ const NewProductPage = () => {
       const user = auth.currentUser;
       if (!user) throw new Error("No autenticado");
       let imageUrls: string[] = [];
-      if (imagenes.length >= 4) {
+      if (imagenes.length >= 2) {
         imageUrls = await uploadMultipleImages(imagenes);
       }
       const firestore = getFirestore(app);
