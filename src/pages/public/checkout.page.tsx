@@ -402,30 +402,29 @@ const CheckoutPage = () => {
     }}>
       <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 3 }}>
         {/* Header y Stepper */}
-        <Box sx={{ mb: 6, textAlign: 'center' }}>
-          <Button
-            startIcon={<ArrowBack />}
-            onClick={() => navigate('/cart')}
-            sx={{
-              background: '#8B7355',
-              color: 'white',
-              borderRadius: 3,
-              padding: '10px 20px',
-              fontWeight: 600,
-              mb: 3,
-              '&:hover': {
-                background: '#A0522D',
-                transform: 'translateY(-2px)'
-              }
-            }}
-          >
-            Volver al Carrito
-          </Button>
-          
-          <Typography variant="h2" fontWeight="700" sx={{ color: '#5d4037', mb: 2 }}>
-            Finalizar Compra
-          </Typography>
-          
+        <Box sx={{ mb: 6 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Button
+              startIcon={<ArrowBack />}
+              onClick={() => navigate('/cart')}
+              sx={{
+                background: '#8B7355',
+                color: 'white',
+                borderRadius: 3,
+                padding: '10px 20px',
+                fontWeight: 600,
+                '&:hover': {
+                  background: '#A0522D',
+                  transform: 'translateY(-2px)'
+                }
+              }}
+            >
+            </Button>
+            <Typography variant="h2" fontWeight="700" sx={{ color: '#5d4037', textAlign: 'center', flex: 1 }}>
+              Finalizar Compra
+            </Typography>
+            <Box sx={{ width: 180 }} />
+          </Box>
           <Stepper activeStep={activeStep} sx={{ mb: 4, maxWidth: 700, mx: 'auto' }}>
             {steps.map((label, index) => (
               <Step key={label}>
