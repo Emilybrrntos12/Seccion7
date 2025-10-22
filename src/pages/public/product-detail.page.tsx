@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { ProductReviews } from "../../components/ui/product-reviews";
-import Header from '@/components/ui/header';
+import Header2 from "@/components/ui/header-v2";
 
 type Product = {
   id: string;
@@ -211,7 +211,7 @@ const ProductDetailPage = () => {
 
   return (
     <>
-      <Header />
+      <Header2 />
       <Box sx={{ 
         minHeight: '100vh', 
         background: 'linear-gradient(135deg, #fffdf9 0%, #e8dcc8 50%)',

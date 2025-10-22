@@ -2,7 +2,6 @@ import { imprimirOrdenFirebase } from "../../lib/imprimirOrdenFirebase";
 import type { FirebaseOrder } from "../../lib/imprimirOrdenFirebase";
 // Imprimir orden en formato Firebase (cartItems)
 import React, { useEffect, useState } from "react";
-import Header from "./header";
 import { useSigninCheck, useFirebaseApp, useUser, useAuth } from "reactfire";
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore/lite";
 import Swal from "sweetalert2";
@@ -44,6 +43,7 @@ import {
   Phone,
   LocationOn
 } from "@mui/icons-material";
+import Header2 from "./header-v2";
 
 const MySwal = withReactContent(Swal);
 
@@ -281,7 +281,7 @@ interface Order {
       paddingTop: '80px',
       py: 4
     }}>
-      <Header />
+      <Header2 />
       <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 3 }}>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: 6 }}>

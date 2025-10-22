@@ -4,7 +4,7 @@ import { Button, TextField, Box, Typography, Paper, Avatar, CircularProgress } f
 import { getFirestore, collection, getDocs, query, where, addDoc, doc, updateDoc } from "firebase/firestore/lite";
 import { useFirebaseApp, useUser } from "reactfire";
 import SendIcon from '@mui/icons-material/Send';
-import Header from "@/components/ui/header";
+import Header2 from "@/components/ui/header-v2";
 
 interface ChatMessage {
   author: "user" | "admin";
@@ -90,7 +90,7 @@ const formatTimestamp = (timestamp: { seconds: number } | Date | undefined) => {
 
   return (
     <>
-      <Header />
+      <Header2 />
       <Box sx={{ 
         minHeight: '100vh', 
         background: 'linear-gradient(135deg, #fffdf9 0%, #e8dcc8 100%)',

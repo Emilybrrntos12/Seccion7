@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useFirebaseApp } from 'reactfire';
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import Header from '@/components/ui/header';
 import { 
   Box, 
   Typography, 
@@ -16,6 +15,7 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmptyStateIcon from '@mui/icons-material/FavoriteBorder';
+import Header2 from '@/components/ui/header-v2';
 
 type Product = {
   id: string;
@@ -68,7 +68,7 @@ const FavoritosPage = () => {
 
   return (
     <>
-      <Header />
+      <Header2 />
       <Box sx={{ 
         minHeight: '100vh', 
         background: 'linear-gradient(135deg, #fffdf9 0%, #e8dcc8 50%)',
