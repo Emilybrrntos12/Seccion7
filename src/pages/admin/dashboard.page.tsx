@@ -14,7 +14,11 @@ import {
   Avatar,
   IconButton,
   Skeleton,
-  Alert
+  Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 import {
   Edit,
@@ -34,6 +38,7 @@ type Product = {
   imagen?: string;
   fotos?: string[];
   createdBy: string;
+  categoria?: string;
 };
 
 // Paleta de colores tierra creativa
@@ -58,6 +63,7 @@ const DashboardPage = () => {
   const [profile, setProfile] = useState<{ nombre?: string; email?: string; avatar?: string } | null>(null);
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [categoriaFiltro, setCategoriaFiltro] = useState<string>("");
 
   // Obtener perfil del usuario desde Firestore
   useEffect(() => {
@@ -96,7 +102,8 @@ const DashboardPage = () => {
               precio: data.precio ?? 0,
               imagen: data.imagen,
               fotos: Array.isArray(data.fotos) ? data.fotos : undefined,
-              createdBy: data.createdBy
+              createdBy: data.createdBy,
+              categoria: data.categoria ?? '',
             };
           })
           .filter(product => product.createdBy === user.uid);
@@ -283,7 +290,8 @@ const DashboardPage = () => {
           gap: 2, 
           mb: 3, 
           flexWrap: 'wrap',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          alignItems: 'center'
         }}>
           {/* Tarjeta 1 - Productos Totales */}
           <Card sx={{
@@ -337,6 +345,25 @@ const DashboardPage = () => {
               background: `linear-gradient(90deg, ${palette.primary} 0%, ${palette.secondary} 100%)`
             }} />
           </Card>
+
+          {/* Filtro de Categoría */}
+          <FormControl sx={{ minWidth: 200, background: 'white', borderRadius: 2, boxShadow: '0 2px 8px rgba(139, 115, 85, 0.07)', border: `1px solid ${palette.light}` }}>
+            <InputLabel id="categoria-filtro-label">Filtrar por Categoría</InputLabel>
+            <Select
+              labelId="categoria-filtro-label"
+              value={categoriaFiltro}
+              label="Filtrar por Categoría"
+              onChange={e => setCategoriaFiltro(e.target.value)}
+              sx={{ borderRadius: 2 }}
+            >
+              <MenuItem value=""><em>Todas</em></MenuItem>
+              <MenuItem value="Mocasines">Mocasines</MenuItem>
+              <MenuItem value="Tacones">Tacones</MenuItem>
+              <MenuItem value="Botines">Botines</MenuItem>
+              <MenuItem value="Botas">Botas</MenuItem>
+              <MenuItem value="Sandalias">Sandalias</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
 
         {/* Products Section */}
@@ -452,7 +479,13 @@ const DashboardPage = () => {
                 flexWrap: 'wrap',
                 justifyContent: 'center'
               }}>
-                {products.map((product) => (
+                {products
+                  .filter(product => {
+                    if (!categoriaFiltro) return true;
+                    // Normalizar a minúsculas y manejar undefined
+                    return (product.categoria || '').toLowerCase() === categoriaFiltro.toLowerCase();
+                  })
+                  .map((product) => (
                   <Card key={product.id} sx={{
                     background: 'white',
                     borderRadius: 2,
