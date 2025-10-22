@@ -412,7 +412,6 @@ const OrderPage = () => {
               }
             }}
           >
-            Volver al Panel
           </Button>
 
           <Box sx={{ 
@@ -686,6 +685,23 @@ const OrderPage = () => {
                       <Typography>{selectedOrder.direccion}</Typography>
                     </Box>
                   </Box>
+<Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+  <Chip
+    label={`Método de pago: ${selectedOrder.metodoPago}`}
+    sx={{ 
+      fontWeight: 700, 
+      fontSize: '0.85rem',
+      bgcolor: palette.primary,
+      color: 'white',
+      border: `2px solid ${palette.light}`,
+      boxShadow: '0 2px 8px rgba(139, 115, 85, 0.2)',
+      '& .MuiChip-label': {
+        px: 2,
+        py: 0.5
+      }
+    }}
+  />
+</Box>
                 </Box>
 
                 {/* Productos */}

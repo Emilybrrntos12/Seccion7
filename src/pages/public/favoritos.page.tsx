@@ -12,10 +12,8 @@ import {
   CardMedia, 
   CircularProgress,
   Button,
-  IconButton
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmptyStateIcon from '@mui/icons-material/FavoriteBorder';
 
@@ -255,21 +253,6 @@ const FavoritosPage = () => {
                         >
                           Ver
                         </Button>
-                        
-                        <IconButton
-                          sx={{
-                            background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
-                            color: 'white',
-                            borderRadius: 2,
-                            '&:hover': {
-                              background: 'linear-gradient(135deg, #A0522D 0%, #8B7355 100%)',
-                              transform: 'scale(1.05)'
-                            },
-                            transition: 'all 0.2s ease'
-                          }}
-                        >
-                          <ShoppingCartIcon />
-                        </IconButton>
                       </Box>
                     </CardContent>
                   </Card>

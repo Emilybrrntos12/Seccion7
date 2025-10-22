@@ -20,27 +20,27 @@ interface SidebarLogoutProps {
 const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
   return (
     <Box sx={{ 
-      p: 3, 
-      pt: 2,
+      p: 2, // Reducido de 3
+      pt: 1.5, // Reducido de 2
       background: `linear-gradient(180deg, transparent 0%, ${palette.light}15 100%)`,
       borderTop: `1px solid ${palette.light}`
     }}>
       <ListItemButton 
         onClick={onLogout}
         sx={{
-          borderRadius: 3,
-          py: 2,
-          px: 2,
+          borderRadius: 2, // Reducido de 3
+          py: 1.5, // Reducido de 2
+          px: 1.5, // Reducido de 2
           background: `linear-gradient(135deg, ${palette.error}15 0%, ${palette.errorLight}08 100%)`,
           '&:hover': {
             background: `linear-gradient(135deg, ${palette.error}20 0%, ${palette.errorLight}15 100%)`,
-            transform: 'translateY(-2px)',
-            boxShadow: `0 8px 25px ${palette.error}25`,
-            borderLeft: `4px solid ${palette.error}`,
+            transform: 'translateY(-1px)', // Reducido de -2px
+            boxShadow: `0 6px 20px ${palette.error}25`, // Reducida sombra
+            borderLeft: `3px solid ${palette.error}`, // Reducido de 4px
           },
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'all 0.2s ease', // Reducida duración
           border: `2px solid ${palette.error}20`,
-          borderLeft: '4px solid transparent',
+          borderLeft: '3px solid transparent', // Reducido de 4px
           position: 'relative',
           overflow: 'hidden',
           '&::before': {
@@ -54,14 +54,14 @@ const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
           }
         }}
       >
-        {/* Efecto de fondo decorativo */}
+        {/* Efecto de fondo decorativo - más pequeño */}
         <Box
           sx={{
             position: 'absolute',
-            top: -10,
-            right: -10,
-            width: 40,
-            height: 40,
+            top: -8, // Reducido de -10
+            right: -8, // Reducido de -10
+            width: 32, // Reducido de 40
+            height: 32, // Reducido de 40
             borderRadius: '50%',
             background: `radial-gradient(circle, ${palette.error}15 0%, transparent 70%)`,
             opacity: 0.6,
@@ -69,27 +69,27 @@ const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
         />
         
         <ListItemIcon sx={{ 
-          minWidth: 44,
+          minWidth: 36, // Reducido de 44
           position: 'relative',
           zIndex: 1
         }}>
           <Box
             sx={{
-              p: 1,
+              p: 0.8, // Reducido de 1
               borderRadius: '50%',
               background: `linear-gradient(135deg, ${palette.error} 0%, ${palette.errorLight} 100%)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: `0 4px 12px ${palette.error}40`,
-              transition: 'all 0.3s ease',
+              boxShadow: `0 3px 8px ${palette.error}40`, // Reducida sombra
+              transition: 'all 0.2s ease', // Reducida duración
               '.MuiListItemButton:hover &': {
-                transform: 'scale(1.1) rotate(-5deg)',
+                transform: 'scale(1.05) rotate(-3deg)', // Reducido efecto
               }
             }}
           >
             <ExitToAppIcon sx={{ 
-              fontSize: 20, 
+              fontSize: 18, // Reducido de 20
               color: 'white',
               fontWeight: 'bold'
             }} />
@@ -99,10 +99,10 @@ const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
         <ListItemText 
           primary={
             <Typography 
-              variant="body1" 
+              variant="body2" // Cambiado de body1 a body2
               sx={{
-                fontSize: '1rem',
-                fontWeight: '700',
+                fontSize: '0.9rem', // Reducido de 1rem
+                fontWeight: '600', // Reducido de 700
                 background: `linear-gradient(135deg, ${palette.error} 0%, ${palette.errorLight} 100%)`,
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
@@ -121,7 +121,7 @@ const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
                 color: palette.error,
                 opacity: 0.8,
                 fontWeight: '500',
-                fontSize: '0.75rem'
+                fontSize: '0.7rem' // Reducido de 0.75rem
               }}
             >
               Salir de la cuenta actual
@@ -134,18 +134,18 @@ const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
         />
       </ListItemButton>
 
-      {/* Footer decorativo */}
+      {/* Footer decorativo - más compacto */}
       <Box sx={{ 
         textAlign: 'center', 
-        mt: 2,
-        pt: 1,
+        mt: 1.5, // Reducido de 2
+        pt: 0.8, // Reducido de 1
         position: 'relative',
         '&::before': {
           content: '""',
           position: 'absolute',
           top: 0,
-          left: '20%',
-          right: '20%',
+          left: '25%', // Ajustado de 20%
+          right: '25%', // Ajustado de 20%
           height: '1px',
           background: `linear-gradient(90deg, transparent 0%, ${palette.light} 50%, transparent 100%)`,
         }
@@ -155,7 +155,7 @@ const SidebarLogout = ({ onLogout }: SidebarLogoutProps) => {
           sx={{ 
             color: palette.dark,
             opacity: 0.6,
-            fontSize: '0.7rem',
+            fontSize: '0.65rem', // Reducido de 0.7rem
             fontWeight: '500'
           }}
         >

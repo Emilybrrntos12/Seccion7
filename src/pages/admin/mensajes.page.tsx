@@ -192,7 +192,6 @@ export const MensajesAdmin: React.FC = () => {
             transition: 'all 0.3s ease'
           }}
         >
-          Regresar
         </Button>
 
         <Card sx={{ 

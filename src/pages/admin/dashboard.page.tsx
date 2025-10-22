@@ -148,8 +148,8 @@ const DashboardPage = () => {
       
       <Box sx={{ 
         flex: 1, 
-        p: 3,
-        ml: sidebarOpen ? '280px' : 0,
+        p: 2,
+        ml: sidebarOpen ? '60px' : 0, // margen reducido para acercar el dashboard al sidebar
         transition: 'margin-left 0.3s ease',
         position: 'relative'
       }}>
@@ -157,10 +157,10 @@ const DashboardPage = () => {
         {/* Elementos decorativos de fondo */}
         <Box sx={{
           position: 'absolute',
-          top: -100,
-          right: -100,
-          width: 300,
-          height: 300,
+          top: -80,
+          right: -80,
+          width: 250,
+          height: 250,
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(139, 115, 85, 0.1) 0%, rgba(139, 115, 85, 0) 70%)',
           zIndex: 0
@@ -168,10 +168,10 @@ const DashboardPage = () => {
         
         <Box sx={{
           position: 'absolute',
-          bottom: 50,
-          left: -50,
-          width: 200,
-          height: 200,
+          bottom: 40,
+          left: -40,
+          width: 160,
+          height: 160,
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(160, 82, 45, 0.08) 0%, rgba(160, 82, 45, 0) 70%)',
           zIndex: 0
@@ -180,37 +180,37 @@ const DashboardPage = () => {
         {/* Header Hero Section */}
         <Card sx={{
           background: `linear-gradient(135deg, ${palette.primary} 0%, ${palette.secondary} 100%)`,
-          borderRadius: 4,
-          boxShadow: '0 20px 60px rgba(139, 115, 85, 0.4)',
-          mb: 4,
+          borderRadius: 3,
+          boxShadow: '0 15px 40px rgba(139, 115, 85, 0.3)',
+          mb: 3,
           overflow: 'hidden',
           position: 'relative',
           zIndex: 1,
-          border: `2px solid ${palette.light}`
+          border: `1px solid ${palette.light}`
         }}>
-          <CardContent sx={{ p: 4, position: 'relative', zIndex: 2 }}>
+          <CardContent sx={{ p: 3, position: 'relative', zIndex: 2 }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: 3, 
+              gap: 2, 
               flexWrap: { xs: 'wrap', md: 'nowrap' },
               justifyContent: 'space-between'
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flex: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
                 <Avatar
                   sx={{
-                    width: 90,
-                    height: 90,
+                    width: 70,
+                    height: 70,
                     bgcolor: palette.background,
                     color: palette.primary,
-                    fontSize: '2.2rem',
+                    fontSize: '1.8rem',
                     fontWeight: 'bold',
-                    border: `4px solid ${palette.light}`,
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+                    border: `3px solid ${palette.light}`,
+                    boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'scale(1.05)',
-                      boxShadow: '0 12px 40px rgba(0,0,0,0.3)'
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.2)'
                     }
                   }}
                   src={profile?.avatar || user?.photoURL || undefined}
@@ -219,18 +219,18 @@ const DashboardPage = () => {
                 </Avatar>
                 
                 <Box sx={{ flex: 1 }}>
-                  <Typography variant="h2" fontWeight="900" sx={{ 
+                  <Typography variant="h4" fontWeight="800" sx={{ 
                     color: 'white', 
-                    mb: 1,
-                    fontSize: { xs: '2rem', md: '3rem' },
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                    mb: 0.5,
+                    fontSize: { xs: '1.5rem', md: '2.2rem' },
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.3)'
                   }}>
                     ¡Hola, {displayName}!
                   </Typography>
-                  <Typography variant="h5" sx={{ 
+                  <Typography variant="h6" sx={{ 
                     color: palette.light, 
                     opacity: 0.95,
-                    fontSize: { xs: '1rem', md: '1.5rem' }
+                    fontSize: { xs: '0.9rem', md: '1.2rem' }
                   }}>
                     Tu centro de control para el éxito empresarial
                   </Typography>
@@ -244,19 +244,19 @@ const DashboardPage = () => {
                 sx={{
                   bgcolor: palette.background,
                   color: palette.primary,
-                  px: 5,
-                  py: 2,
-                  fontSize: '1.2rem',
-                  borderRadius: 3,
-                  fontWeight: '800',
-                  minWidth: 220,
-                  border: `3px solid ${palette.light}`,
+                  px: 3,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  borderRadius: 2,
+                  fontWeight: '700',
+                  minWidth: 180,
+                  border: `2px solid ${palette.light}`,
                   '&:hover': {
                     bgcolor: palette.light,
-                    transform: 'translateY(-4px)',
-                    boxShadow: `0 15px 35px rgba(255, 255, 255, 0.3)`
+                    transform: 'translateY(-2px)',
+                    boxShadow: `0 10px 25px rgba(255, 255, 255, 0.2)`
                   },
-                  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                  transition: 'all 0.3s ease'
                 }}
               >
                 Crear Producto
@@ -280,50 +280,51 @@ const DashboardPage = () => {
         {/* Stats Cards - Diseño en fila */}
         <Box sx={{ 
           display: 'flex', 
-          gap: 3, 
-          mb: 4, 
+          gap: 2, 
+          mb: 3, 
           flexWrap: 'wrap',
           justifyContent: 'center'
         }}>
           {/* Tarjeta 1 - Productos Totales */}
           <Card sx={{
             background: 'white',
-            borderRadius: 3,
-            boxShadow: '0 12px 40px rgba(139, 115, 85, 0.15)',
-            border: `2px solid ${palette.light}`,
-            transition: 'all 0.4s ease',
-            flex: '1 1 200px',
-            minWidth: 220,
-            maxWidth: 280,
+            borderRadius: 2,
+            boxShadow: '0 8px 25px rgba(139, 115, 85, 0.12)',
+            border: `1px solid ${palette.light}`,
+            transition: 'all 0.3s ease',
+            flex: '1 1 180px',
+            minWidth: 180,
+            maxWidth: 220,
             position: 'relative',
             overflow: 'hidden',
             '&:hover': {
-              transform: 'translateY(-8px) rotate(1deg)',
-              boxShadow: '0 20px 50px rgba(139, 115, 85, 0.25)'
+              transform: 'translateY(-4px)',
+              boxShadow: '0 12px 35px rgba(139, 115, 85, 0.2)'
             }
           }}>
-            <CardContent sx={{ p: 3, textAlign: 'center', position: 'relative', zIndex: 2 }}>
+            <CardContent sx={{ p: 2, textAlign: 'center', position: 'relative', zIndex: 2 }}>
               <Box sx={{
                 display: 'inline-flex',
-                p: 2,
+                p: 1.5,
                 borderRadius: '50%',
                 bgcolor: `${palette.primary}20`,
-                mb: 2,
-                border: `2px solid ${palette.primary}30`
+                mb: 1.5,
+                border: `1px solid ${palette.primary}30`
               }}>
-                <ShoppingBag sx={{ fontSize: 32, color: palette.primary }} />
+                <ShoppingBag sx={{ fontSize: 24, color: palette.primary }} />
               </Box>
-              <Typography variant="h3" fontWeight="900" sx={{ 
+              <Typography variant="h4" fontWeight="800" sx={{ 
                 color: palette.dark, 
-                mb: 1,
+                mb: 0.5,
                 background: `linear-gradient(135deg, ${palette.dark} 0%, ${palette.primary} 100%)`,
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                WebkitTextFillColor: 'transparent',
+                fontSize: '1.8rem'
               }}>
                 {products.length}
               </Typography>
-              <Typography variant="h6" sx={{ color: palette.primary, fontWeight: 700 }}>
+              <Typography variant="body1" sx={{ color: palette.primary, fontWeight: 600, fontSize: '0.9rem' }}>
                 Productos Totales
               </Typography>
             </CardContent>
@@ -332,77 +333,73 @@ const DashboardPage = () => {
               bottom: 0,
               left: 0,
               right: 0,
-              height: '4px',
+              height: '3px',
               background: `linear-gradient(90deg, ${palette.primary} 0%, ${palette.secondary} 100%)`
             }} />
           </Card>
-
-          {/* Tarjeta 2 - Productos Premium */}
-
-
-          {/* Tarjeta 3 - Ingreso Potencial */}
-
         </Box>
 
         {/* Products Section */}
         <Card sx={{
           background: 'white',
-          borderRadius: 4,
-          boxShadow: '0 20px 60px rgba(139, 115, 85, 0.15)',
-          border: `2px solid ${palette.light}`,
+          borderRadius: 3,
+          boxShadow: '0 12px 40px rgba(139, 115, 85, 0.12)',
+          border: `1px solid ${palette.light}`,
           overflow: 'hidden',
           position: 'relative',
           zIndex: 1
         }}>
-          <CardContent sx={{ p: 4 }}>
+          <CardContent sx={{ p: 3 }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'space-between', 
-              mb: 4,
+              mb: 3,
               flexWrap: 'wrap',
-              gap: 2
+              gap: 1
             }}>
               <Box>
-                <Typography variant="h3" fontWeight="900" sx={{ 
+                <Typography variant="h4" fontWeight="800" sx={{ 
                   color: palette.dark, 
-                  mb: 1,
+                  mb: 0.5,
                   background: `linear-gradient(135deg, ${palette.dark} 0%, ${palette.primary} 100%)`,
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
+                  WebkitTextFillColor: 'transparent',
+                  fontSize: '1.8rem'
                 }}>
                   Tu Catálogo
                 </Typography>
-                <Typography variant="h6" sx={{ color: palette.primary, opacity: 0.8, fontWeight: 600 }}>
+                <Typography variant="body1" sx={{ color: palette.primary, opacity: 0.8, fontWeight: 600, fontSize: '0.9rem' }}>
                   Gestiona tu colección de productos
                 </Typography>
               </Box>
               
               <Chip 
                 icon={<Inventory />}
-                label={`${products.length} productos en stock`}
+                label={`${products.length} productos`}
                 sx={{ 
                   bgcolor: palette.primary,
                   color: 'white',
-                  fontWeight: 800,
-                  fontSize: '1rem',
-                  px: 3,
-                  py: 2,
-                  border: `2px solid ${palette.light}`
+                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  px: 2,
+                  py: 1,
+                  border: `1px solid ${palette.light}`,
+                  height: '32px'
                 }}
               />
             </Box>
 
             {loading ? (
-              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                 {[1, 2, 3].map((item) => (
                   <Skeleton 
                     key={item} 
                     variant="rectangular" 
-                    width={300} 
-                    height={350} 
-                    sx={{ borderRadius: 3 }} 
+                    width={280} 
+                    height={320} 
+                    sx={{ borderRadius: 2 }} 
                   />
                 ))}
               </Box>
@@ -411,18 +408,18 @@ const DashboardPage = () => {
                 severity="info" 
                 sx={{ 
                   bgcolor: `${palette.light}40`,
-                  border: `2px solid ${palette.light}`,
-                  borderRadius: 3,
-                  p: 4,
-                  '& .MuiAlert-icon': { color: palette.primary, fontSize: 32 }
+                  border: `1px solid ${palette.light}`,
+                  borderRadius: 2,
+                  p: 2,
+                  '& .MuiAlert-icon': { color: palette.primary, fontSize: 24 }
                 }}
               >
                 <Box sx={{ textAlign: 'center' }}>
-                  <Store sx={{ fontSize: 64, color: palette.primary, mb: 2, opacity: 0.7 }} />
-                  <Typography variant="h4" sx={{ color: palette.dark, mb: 2, fontWeight: 800 }}>
+                  <Store sx={{ fontSize: 48, color: palette.primary, mb: 1, opacity: 0.7 }} />
+                  <Typography variant="h5" sx={{ color: palette.dark, mb: 1, fontWeight: 700, fontSize: '1.3rem' }}>
                     ¡Tu tienda está esperando!
                   </Typography>
-                  <Typography variant="h6" sx={{ color: palette.primary, mb: 3, opacity: 0.9 }}>
+                  <Typography variant="body1" sx={{ color: palette.primary, mb: 2, opacity: 0.9, fontSize: '0.9rem' }}>
                     Convierte tu creatividad en oportunidades de negocio
                   </Typography>
                   <Button
@@ -432,14 +429,14 @@ const DashboardPage = () => {
                     sx={{
                       bgcolor: palette.primary,
                       color: 'white',
-                      px: 5,
-                      py: 2,
-                      fontSize: '1.1rem',
-                      borderRadius: 3,
-                      fontWeight: '800',
+                      px: 3,
+                      py: 1,
+                      fontSize: '0.9rem',
+                      borderRadius: 2,
+                      fontWeight: '700',
                       '&:hover': {
                         bgcolor: palette.secondary,
-                        transform: 'scale(1.05)'
+                        transform: 'scale(1.03)'
                       },
                       transition: 'all 0.3s ease'
                     }}
@@ -451,32 +448,32 @@ const DashboardPage = () => {
             ) : (
               <Box sx={{ 
                 display: 'flex', 
-                gap: 4, 
+                gap: 3, 
                 flexWrap: 'wrap',
                 justifyContent: 'center'
               }}>
                 {products.map((product) => (
                   <Card key={product.id} sx={{
                     background: 'white',
-                    borderRadius: 3,
-                    boxShadow: '0 8px 32px rgba(139, 115, 85, 0.1)',
-                    border: `2px solid ${palette.light}`,
-                    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    width: 320,
-                    minHeight: 420,
+                    borderRadius: 2,
+                    boxShadow: '0 6px 20px rgba(139, 115, 85, 0.08)',
+                    border: `1px solid ${palette.light}`,
+                    transition: 'all 0.3s ease',
+                    width: 280,
+                    minHeight: 380,
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
                     overflow: 'hidden',
                     '&:hover': {
-                      transform: 'translateY(-12px) scale(1.02)',
-                      boxShadow: '0 25px 60px rgba(139, 115, 85, 0.25)',
+                      transform: 'translateY(-6px)',
+                      boxShadow: '0 15px 35px rgba(139, 115, 85, 0.15)',
                       borderColor: palette.primary
                     }
                   }}>
                     {/* Product Image */}
                     <Box sx={{ 
-                      height: 220, 
+                      height: 180, 
                       position: 'relative',
                       overflow: 'hidden'
                     }}>
@@ -488,10 +485,10 @@ const DashboardPage = () => {
                             width: '100%', 
                             height: '100%', 
                             objectFit: 'cover',
-                            transition: 'transform 0.6s ease'
+                            transition: 'transform 0.4s ease'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.1)';
+                            e.currentTarget.style.transform = 'scale(1.05)';
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.transform = 'scale(1)';
@@ -505,7 +502,7 @@ const DashboardPage = () => {
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}>
-                          <Store sx={{ fontSize: 64, color: palette.primary, opacity: 0.4 }} />
+                          <Store sx={{ fontSize: 48, color: palette.primary, opacity: 0.4 }} />
                         </Box>
                       )}
                       
@@ -515,47 +512,50 @@ const DashboardPage = () => {
                         label={`Q${product.precio}`}
                         sx={{
                           position: 'absolute',
-                          top: 16,
-                          right: 16,
+                          top: 12,
+                          right: 12,
                           bgcolor: palette.primary,
                           color: 'white',
-                          fontWeight: '800',
-                          fontSize: '1.1rem',
-                          height: 36,
-                          border: `2px solid ${palette.light}`
+                          fontWeight: '700',
+                          fontSize: '0.9rem',
+                          height: 28,
+                          border: `1px solid ${palette.light}`,
+                          '& .MuiChip-icon': { fontSize: 16 }
                         }}
                       />
                     </Box>
 
-                    <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <CardContent sx={{ p: 2, flex: 1, display: 'flex', flexDirection: 'column' }}>
                       <Typography 
-                        variant="h5" 
-                        fontWeight="800" 
+                        variant="h6" 
+                        fontWeight="700" 
                         sx={{ 
                           color: palette.dark,
-                          mb: 2,
+                          mb: 1,
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
                           overflow: 'hidden',
-                          minHeight: '4.5rem'
+                          minHeight: '3.5rem',
+                          fontSize: '1.1rem'
                         }}
                       >
                         {product.nombre}
                       </Typography>
                       
                       <Typography 
-                        variant="body1" 
+                        variant="body2" 
                         sx={{ 
                           color: palette.primary,
                           opacity: 0.9,
-                          mb: 3,
+                          mb: 2,
                           flex: 1,
                           display: '-webkit-box',
                           WebkitLineClamp: 3,
                           WebkitBoxOrient: 'vertical',
                           overflow: 'hidden',
-                          lineHeight: 1.6
+                          lineHeight: 1.5,
+                          fontSize: '0.85rem'
                         }}
                       >
                         {product.descripcion}
@@ -572,15 +572,16 @@ const DashboardPage = () => {
                           sx={{
                             bgcolor: palette.primary,
                             color: 'white',
-                            borderRadius: 2,
+                            borderRadius: 1.5,
                             flex: 1,
-                            py: 1,
-                            fontWeight: 700,
+                            py: 0.75,
+                            fontWeight: 600,
+                            fontSize: '0.8rem',
                             '&:hover': {
                               bgcolor: palette.dark,
-                              transform: 'translateY(-2px)'
+                              transform: 'translateY(-1px)'
                             },
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.2s ease'
                           }}
                         >
                           Editar
@@ -591,18 +592,18 @@ const DashboardPage = () => {
                           sx={{
                             bgcolor: `${palette.error}20`,
                             color: palette.error,
-                            borderRadius: 2,
-                            width: 48,
-                            height: 48,
+                            borderRadius: 1.5,
+                            width: 40,
+                            height: 40,
                             '&:hover': {
                               bgcolor: palette.error,
                               color: 'white',
-                              transform: 'scale(1.1)'
+                              transform: 'scale(1.05)'
                             },
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.2s ease'
                           }}
                         >
-                          <Delete />
+                          <Delete fontSize="small" />
                         </IconButton>
                       </Box>
                     </CardContent>
