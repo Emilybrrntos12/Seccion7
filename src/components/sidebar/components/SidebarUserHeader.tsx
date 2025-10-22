@@ -1,6 +1,14 @@
-import { Box, Badge, Chip, Avatar, Typography, IconButton } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Box, Avatar, Typography, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
+// Paleta de colores tierra
+const palette = {
+  primary: "#8B7355",
+  secondary: "#A0522D",
+  background: "#fffdf9",
+  light: "#e8dcc8",
+  dark: "#5d4037",
+};
 
 interface User {
   displayName?: string;
@@ -15,66 +23,67 @@ interface SidebarUserHeaderProps {
 }
 
 const SidebarUserHeader = ({ user, onClose, getInitials }: SidebarUserHeaderProps) => {
-  const theme = useTheme();
   return (
-    <Box sx={{ p: 3, pb: 2 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Badge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            badgeContent={
-              <Chip
-                label="Online"
-                size="small"
-                sx={{
-                  height: 16,
-                  fontSize: '0.6rem',
-                  backgroundColor: theme.palette.success.main,
-                  color: 'white',
-                  '& .MuiChip-label': { px: 1 }
-                }}
-              />
-            }
-          >
-            <Avatar
-              src={user?.photoURL || undefined}
-              sx={{
-                width: 60,
-                height: 60,
-                border: `2px solid ${theme.palette.primary.main}`,
-                backgroundColor: user?.photoURL ? 'transparent' : theme.palette.primary.main,
-                color: 'white',
-                fontSize: '1.2rem',
-                fontWeight: 'bold'
-              }}
-            >
-              {getInitials(user?.displayName || 'Usuario')}
-            </Avatar>
-          </Badge>
+    <Box sx={{ p: 2, pb: 1.5 }}>
+      <Box display="flex" alignItems="center" gap={1.5}>
+        {/* Avatar compacto */}
+        <Avatar
+          src={user?.photoURL || undefined}
+          sx={{
+            width: 40,
+            height: 40,
+            border: `2px solid ${palette.light}`,
+            backgroundColor: user?.photoURL ? 'transparent' : palette.primary,
+            color: 'white',
+            fontSize: '0.9rem',
+            fontWeight: 'bold'
+          }}
+        >
+          {getInitials(user?.displayName || 'U')}
+        </Avatar>
 
-          <Box>
-            <Typography variant="h6" fontWeight="bold" color="text.primary">
-              {user?.displayName || "Usuario"}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-              {user?.email}
-            </Typography>
-          </Box>
+        {/* Información compacta del usuario */}
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography 
+            variant="subtitle2" 
+            fontWeight="600" 
+            sx={{ 
+              color: palette.dark,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              lineHeight: 1.2
+            }}
+          >
+            {user?.displayName || "Usuario"}
+          </Typography>
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              color: palette.primary,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              lineHeight: 1
+            }}
+          >
+            {user?.email}
+          </Typography>
         </Box>
 
+        {/* Botón de cerrar compacto */}
         <IconButton
           onClick={onClose}
           size="small"
           sx={{
-            color: theme.palette.primary.main,
-            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            color: palette.primary,
+            padding: 0.5,
             '&:hover': {
-              backgroundColor: alpha(theme.palette.primary.main, 0.18),
+              backgroundColor: palette.light,
             }
           }}
         >
-          <ArrowBackIosIcon sx={{ fontSize: 20 }} />
+          <CloseIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
     </Box>
