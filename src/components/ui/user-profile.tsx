@@ -81,11 +81,21 @@ interface Product {
   precio: number;
 }
 
+interface CartItem {
+  cantidad: number;
+  id_producto: string;
+  imagen: string;
+  nombre: string;
+  precio: number;
+  talla_seleccionada: string;
+}
+
 interface Order {
   id: string;
   fecha?: { seconds: number };
   estado?: string;
   productos?: Product[];
+  cartItems?: CartItem[];
   total?: number;
   metodoPago?: string;
 }
@@ -648,14 +658,16 @@ interface Order {
                                       email: profile.email,
                                       direccion: profile.municipio + ', ' + profile.departamento,
                                       notas: '',
-                                      cartItems: (order.productos || []).map((p: Product & { id_producto?: string; talla_seleccionada?: string }) => ({
-                                        cantidad: 1,
-                                        id_producto: p.id_producto || '',
-                                        imagen: p.imagen,
-                                        nombre: p.nombre,
-                                        precio: p.precio,
-                                        talla_seleccionada: p.talla || p.talla_seleccionada || ''
-                                      }))
+                                      cartItems: Array.isArray(order.cartItems) && order.cartItems.length > 0
+                                        ? order.cartItems
+                                        : (order.productos || []).map((p: Product & { id_producto?: string; talla_seleccionada?: string; cantidad?: number }) => ({
+                                            cantidad: typeof p.cantidad === 'number' && p.cantidad > 0 ? p.cantidad : 1,
+                                            id_producto: p.id_producto || '',
+                                            imagen: p.imagen,
+                                            nombre: p.nombre,
+                                            precio: p.precio,
+                                            talla_seleccionada: p.talla || p.talla_seleccionada || ''
+                                          }))
                                     };
                                     imprimirOrdenFirebase(firebaseOrder);
                                   }}
