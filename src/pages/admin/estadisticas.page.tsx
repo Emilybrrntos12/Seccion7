@@ -20,18 +20,18 @@ import {
   Paper,
   CircularProgress,
   Chip,
+  Button,
 } from "@mui/material";
 import {
- 
-
   TrendingUp,
   Analytics,
-
-
+  ArrowBack,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const EstadisticasPage: React.FC = () => {
   const app = useFirebaseApp();
+  const navigate = useNavigate();
   const [data, setData] = useState([
     { puntuacion: 1, cantidad: 0, nombre: "1 Estrella" },
     { puntuacion: 2, cantidad: 0, nombre: "2 Estrellas" },
@@ -152,13 +152,44 @@ const EstadisticasPage: React.FC = () => {
     }}>
       <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3 }}>
         {/* Header */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography variant="h2" fontWeight="700" sx={{ color: palette.dark, mb: 2 }}>
-            Dashboard de Estadísticas
-          </Typography>
-          <Typography variant="h6" sx={{ color: palette.primary, opacity: 0.8 }}>
-            Análisis de satisfacción y confianza de los clientes
-          </Typography>
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 6,
+          flexWrap: 'wrap',
+          gap: 2
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+          <Button
+            startIcon={<ArrowBack />}
+            onClick={() => navigate("/admin")}
+            sx={{
+              background: palette.primary,
+              color: 'white',
+              borderRadius: 3,
+              padding: '10px 20px',
+              fontWeight: 600,
+              mb: 3,
+              '&:hover': {
+                background: palette.secondary,
+                transform: 'translateY(-2px)',
+                boxShadow: '0 4px 12px rgba(139, 115, 85, 0.3)'
+              },
+              transition: 'all 0.3s ease'
+            }}
+          >
+          </Button>
+            
+            <Box>
+              <Typography variant="h2" fontWeight="700" sx={{ color: palette.dark, mb: 1 }}>
+                Dashboard de Estadísticas
+              </Typography>
+              <Typography variant="h6" sx={{ color: palette.primary, opacity: 0.8 }}>
+                Análisis de satisfacción y confianza de los clientes
+              </Typography>
+            </Box>
+          </Box>
         </Box>
 
         {/* Gráfica de Reseñas y Gráfica Circular */}

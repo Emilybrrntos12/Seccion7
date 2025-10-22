@@ -197,7 +197,6 @@ const EditProfilePage = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Volver al Panel
           </Button>
           
           <Typography variant="h2" fontWeight="700" sx={{ color: palette.dark, mb: 2, textAlign: 'center' }}>
