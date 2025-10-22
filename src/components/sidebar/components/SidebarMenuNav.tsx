@@ -2,7 +2,6 @@ import { Box, List } from '@mui/material';
 import SidebarMenuItem from './SidebarMenuItem';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import HistoryIcon from '@mui/icons-material/History';
 import EditIcon from '@mui/icons-material/Edit';
 import ForumIcon from '@mui/icons-material/Forum';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -27,18 +26,13 @@ const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => (
         badgeContent={ordersCount}
       />
       <SidebarMenuItem
-        icon={<HistoryIcon color="primary" />}
-        text="Historial"
-        onClick={() => onNavigate('/admin/order-history')}
-      />
-      <SidebarMenuItem
         icon={<EditIcon color="primary" />}
         text="Editar Perfil"
         onClick={() => onNavigate('/admin/edit-profile')}
       />
       <SidebarMenuItem
         icon={<ForumIcon color="primary" />}
-        text="Mensajes (Admin)"
+        text="Mensajes"
         onClick={() => onNavigate('/admin/mensajes')}
       />
       <SidebarMenuItem
