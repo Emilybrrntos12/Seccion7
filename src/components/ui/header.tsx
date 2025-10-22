@@ -267,7 +267,7 @@ const Header: React.FC = () => {
                       }
                     }}
                   >
-                    Editar perfil
+                    Ver perfil
                   </MenuItem>
                 )}
                 <MenuItem 

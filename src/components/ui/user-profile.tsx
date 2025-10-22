@@ -2,6 +2,7 @@ import { imprimirOrdenFirebase } from "../../lib/imprimirOrdenFirebase";
 import type { FirebaseOrder } from "../../lib/imprimirOrdenFirebase";
 // Imprimir orden en formato Firebase (cartItems)
 import React, { useEffect, useState } from "react";
+import Header from "./header";
 import { useSigninCheck, useFirebaseApp, useUser, useAuth } from "reactfire";
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore/lite";
 import Swal from "sweetalert2";
@@ -270,10 +271,11 @@ interface Order {
       paddingTop: '80px',
       py: 4
     }}>
+      <Header />
       <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 3 }}>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography variant="h2" fontWeight="700" sx={{ color: palette.dark, mb: 2 }}>
+          <Typography variant="h2" fontWeight="700" pt={8} sx={{ color: palette.dark, mb: 2 }}>
             Mi Cuenta
           </Typography>
           <Typography variant="h6" sx={{ color: palette.primary, opacity: 0.8 }}>
