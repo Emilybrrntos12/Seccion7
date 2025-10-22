@@ -759,7 +759,7 @@ const CheckoutPage = () => {
                                       }}
                                     />
                                     <Typography variant="body2" sx={{ color: '#8B7355', mt: 0.5 }}>
-                                      Cantidad: {item.cantidad} × ${item.product_data.precio}
+                                      Cantidad: {item.cantidad} × Q{item.product_data.precio}
                                     </Typography>
                                   </Box>
                                 }
@@ -874,7 +874,7 @@ const CheckoutPage = () => {
                                   }}
                                 />
                                 <Typography variant="body2" sx={{ color: '#8B7355', mt: 0.5 }}>
-                                  Cantidad: {item.cantidad} × ${item.product_data.precio}
+                                  Cantidad: {item.cantidad} × Q.{item.product_data.precio}
                                 </Typography>
                               </Box>
                             }
@@ -891,7 +891,7 @@ const CheckoutPage = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Typography variant="body1" sx={{ color: '#8B7355' }}>Subtotal</Typography>
                     <Typography variant="body1" fontWeight="600" sx={{ color: '#5d4037' }}>
-                      ${total.toLocaleString()}
+                      Q.{total.toLocaleString()}
                     </Typography>
                   </Box>
                   
@@ -913,7 +913,7 @@ const CheckoutPage = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h6" fontWeight="700" sx={{ color: '#5d4037' }}>Total</Typography>
                     <Typography variant="h5" fontWeight="700" sx={{ color: '#A0522D' }}>
-                      ${total.toLocaleString()}
+                      Q.{total.toLocaleString()}
                     </Typography>
                   </Box>
                 </Box>

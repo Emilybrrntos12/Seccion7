@@ -26,6 +26,7 @@ import { initAnalytics, trackPageView } from "./analytics";
 import { UserProfile } from "./components/ui/user-profile"
 import { Contacto } from "./pages/public/contacto.page"
 import UsersList from "./components/sidebar/components/UsersList";
+import EstadiscasPage from "./pages/admin/estadisticas.page";
 
 
 const App = () => {
@@ -66,6 +67,7 @@ const App = () => {
           <Route path="orders" element={<OrderPage />} />
           <Route path="mensajes" element={<MensajesAdmin />} />
           <Route path="users" element={<UsersList />} />
+          <Route path="estadisticas" element={<EstadiscasPage />} />
         </Route>
 
         {/* Auth */}

@@ -18,7 +18,7 @@ const SidebarMenuNav = ({ ordersCount, onNavigate }: SidebarMenuNavProps) => (
       <SidebarMenuItem
         icon={<DashboardIcon color="primary" />}
         text="Dashboard"
-        onClick={() => onNavigate('/admin/dashboard')}
+        onClick={() => onNavigate('/admin/estadisticas')}
       />
       <SidebarMenuItem
         icon={<ShoppingBagIcon color="primary" />}
