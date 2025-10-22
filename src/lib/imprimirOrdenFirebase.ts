@@ -101,8 +101,24 @@ export function imprimirOrdenFirebase(orden: FirebaseOrder) {
   doc.setFont("helvetica", "normal");
   doc.text("Gracias por su compra. Te contactaremos pronto para coordinar la entrega.", 14, finalY + 30);
   // Guardar PDF
-  const fileName = `orden_${orden.id || 'scm'}_${new Date().getTime()}.pdf`;
-  doc.save(fileName);
+  // Mostrar PDF en un iframe oculto y abrir el diálogo de impresión automáticamente
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  let printIframe = document.getElementById('pdf-print-iframe') as HTMLIFrameElement | null;
+  if (!printIframe) {
+    printIframe = document.createElement('iframe');
+    printIframe.style.display = 'none';
+    printIframe.id = 'pdf-print-iframe';
+    document.body.appendChild(printIframe);
+  }
+  printIframe.src = url;
+  printIframe.onload = function () {
+    setTimeout(() => {
+      printIframe?.contentWindow?.focus();
+      printIframe?.contentWindow?.print();
+      URL.revokeObjectURL(url);
+    }, 500);
+  };
 }
 
 // Función auxiliar para colores de estado
