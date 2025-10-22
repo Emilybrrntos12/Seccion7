@@ -1,18 +1,52 @@
 import { Box } from "@mui/material";
 import Header  from "../../components/ui/header";
 import nosotrosImage from '../../assets/nosotros.jpeg';
+import hormaImage from '../../assets/horma.jpeg';
+import corteImage from '../../assets/corte.jpeg';
+import ensambleImage from '../../assets/ensamble.jpeg';
+import pulidoImage from '../../assets/pulido.jpeg';
+
+import fundadorImage from '../../assets/fundador.jpeg';
+import tabajadorImage from '../../assets/tabajador.jpg';
 
 const artesanos = [
-  { nombre: "Don Pedro", foto: "/public/artesanos/pedro.jpg", rol: "Maestro zapatero" },
-  { nombre: "Doña Juana", foto: "/public/artesanos/juana.jpg", rol: "Corte y costura" },
-  { nombre: "Don Luis", foto: "/public/artesanos/luis.jpg", rol: "Acabados y detalles" }
+  {
+    nombre: 'Nuestra Fundadora y Equipo de Corazón',
+    foto: fundadorImage,
+    rol: ''
+  },
+  {
+    nombre: 'La tradición del oficio',
+    foto: tabajadorImage,
+    rol: ''
+  }
 ];
 
 const galeria = [
-  { src: "/public/proceso/corte.jpg", alt: "Corte de cuero artesanal" },
-  { src: "/public/proceso/costura.jpg", alt: "Costura a mano" },
-  { src: "/public/proceso/ensamblaje.jpg", alt: "Ensamblaje de piezas" },
-  { src: "/public/proceso/terminado.jpg", alt: "Producto terminado" }
+  {
+    src: hormaImage,
+    alt: 'Inicio del proceso',
+    titulo: 'Inicio del proceso',
+    descripcion: 'Todo comienza con la horma, la base sobre la que se moldea el zapato para garantizar la ergonomía y un ajuste perfecto.'
+  },
+  {
+    src: corteImage,
+    alt: 'Corte y Selección del Material',
+    titulo: 'Corte y Selección del Material',
+    descripcion: 'Las piezas de cuero son cortadas y ensambladas a mano. Aquí se define la calidad y el diseño, antes de ser cosidas.'
+  },
+  {
+    src: ensambleImage,
+    alt: 'Ensamble y Costura Firme',
+    titulo: 'Ensamble y Costura Firme',
+    descripcion: 'El calzado toma forma. Cada bota es cosida por manos expertas para asegurar una construcción duradera y resistente.'
+  },
+  {
+    src: pulidoImage,
+    alt: 'Pulido y Acabado',
+    titulo: 'Pulido y Acabado',
+    descripcion: 'Una vez ensambladas, nuestras botas reciben un pulido y acabado para resaltar la belleza natural de la piel.'
+  },
 ];
 
 export const Nosotros: React.FC = () => (
@@ -68,7 +102,6 @@ export const Nosotros: React.FC = () => (
                   <div key={a.nombre} className="w-56 rounded-xl p-4 flex flex-col items-center backdrop-blur-sm bg-white/10 border border-white/20">
                     <img src={a.foto} alt={a.nombre} className="w-28 h-28 object-cover rounded-full mb-3 border-4 border-[#c2a77d]" />
                     <p className="font-bold text-white text-lg">{a.nombre}</p>
-                    <p className="text-white text-sm">{a.rol}</p>
                   </div>
                 ))}
               </div>
@@ -79,7 +112,8 @@ export const Nosotros: React.FC = () => (
                 {galeria.map((img, idx) => (
                   <div key={idx} className="rounded-xl p-2 flex flex-col items-center backdrop-blur-sm bg-white/10 border border-white/20">
                     <img src={img.src} alt={img.alt} className="w-full h-40 object-cover rounded mb-2" />
-                    <p className="text-white text-sm text-center">{img.alt}</p>
+                    <p className="text-white text-base font-bold text-center">{img.titulo || img.alt}</p>
+                    <p className="text-white text-sm text-center">{img.descripcion || img.alt}</p>
                   </div>
                 ))}
               </div>
