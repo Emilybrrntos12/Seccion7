@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Timestamp } from "firebase/firestore/lite";
 import { Button, TextField, Box, Typography, Paper, Avatar, CircularProgress } from "@mui/material";
 import { getFirestore, collection, getDocs, query, where, addDoc, doc, updateDoc } from "firebase/firestore/lite";
@@ -21,6 +22,13 @@ export const ChatUsuario: React.FC = () => {
   const app = useFirebaseApp();
   const [loading, setLoading] = useState(true);
   const chatEndRef = React.useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  // Redirigir si no está logueado
+  useEffect(() => {
+    if (user === null) {
+      navigate('/auth/login', { replace: true });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const fetchChat = async () => {

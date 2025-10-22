@@ -1,6 +1,7 @@
 import { useFavorites } from '@/hooks/use-favorites';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useUser } from 'reactfire';
 import { useFirebaseApp } from 'reactfire';
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 import { 
@@ -31,6 +32,13 @@ const FavoritosPage = () => {
   const app = useFirebaseApp();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const { data: user } = useUser();
+  // Redirigir si no está logueado
+  useEffect(() => {
+    if (user === null) {
+      navigate('/auth/login', { replace: true });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const fetchFavoriteProducts = async () => {
