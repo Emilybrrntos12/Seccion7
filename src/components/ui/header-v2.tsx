@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton, InputBase, Avatar, Button, Badge, Drawer, List, ListItem, ListItemText, ListItemButton, Divider } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton, Avatar, Button, Badge, Drawer, List, ListItem, ListItemText, ListItemButton, Divider } from "@mui/material";
 import { Menu, MenuItem } from "@mui/material";
 import { ShoppingCart, Favorite, Person, Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import ForumIcon from '@mui/icons-material/Forum';
@@ -33,12 +33,6 @@ const Header2: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthActions();
   const unreadCount = useUnreadMessages(false);
-
-  const [search, setSearch] = React.useState("");
-  React.useEffect(() => {
-    localStorage.setItem("searchText", search);
-    window.dispatchEvent(new Event("storage")); // Notifica el cambio a otros componentes
-  }, [search]);
 
   return (
     <AppBar
@@ -150,46 +144,6 @@ const Header2: React.FC = () => {
             ))}
           </List>
         </Drawer>
-
-        {/* Barra de búsqueda */}
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          mx: { xs: 0, md: 2 },
-          flex: 1,
-          maxWidth: { xs: '100%', md: 400 },
-          minWidth: { xs: '100%', md: 250 },
-          my: { xs: 1, md: 0 },
-          order: { xs: 3, md: 2 },
-        }}>
-          <InputBase
-            placeholder="Buscar productos..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            sx={{
-              backgroundColor: "#fffdf9",
-              border: '1px solid #e8dcc8',
-              px: 2,
-              py: 1,
-              borderRadius: 2,
-              width: "100%",
-              fontSize: "0.95rem",
-              color: '#8B7355',
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                borderColor: '#8B7355',
-              },
-              '&:focus-within': {
-                borderColor: '#8B7355',
-                borderWidth: '2px'
-              },
-              '&::placeholder': {
-                color: '#D2C1B0'
-              }
-            }}
-            inputProps={{ 'aria-label': 'buscar' }}
-          />
-        </Box>
 
         {/* Íconos */}
         <Box sx={{

@@ -92,7 +92,7 @@ const HomePage = () => {
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
         
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 pt-30">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 pt-35">
           {/* Hero Section */}
           <div className="rounded-2xl p-8 mb-10 text-center text-white border border-white/20">
             <h1 className="text-4xl font-bold mb-4">Descubre tu estilo perfecto</h1>

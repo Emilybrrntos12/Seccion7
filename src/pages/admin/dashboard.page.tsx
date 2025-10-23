@@ -18,7 +18,7 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import {
   Edit,
@@ -28,6 +28,8 @@ import {
   LocalOffer,
   ShoppingBag,
   Rocket,
+  Search as SearchIcon,
+  Clear as ClearIcon,
 } from "@mui/icons-material";
 import Swal from 'sweetalert2';
 
@@ -65,6 +67,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>("");
+  const [search, setSearch] = useState("");
 
   // Obtener perfil del usuario desde Firestore
   useEffect(() => {
@@ -304,11 +307,11 @@ const DashboardPage = () => {
           }} />
         </Card>
 
-        {/* Stats Cards - Diseño en fila */}
-        <Box sx={{ 
-          display: 'flex', 
-          gap: 2, 
-          mb: 3, 
+        {/* Stats Cards y Filtros */}
+        <Box sx={{
+          display: 'flex',
+          gap: 2,
+          mb: 3,
           flexWrap: 'wrap',
           justifyContent: 'center',
           alignItems: 'center'
@@ -341,8 +344,8 @@ const DashboardPage = () => {
               }}>
                 <ShoppingBag sx={{ fontSize: 24, color: palette.primary }} />
               </Box>
-              <Typography variant="h4" fontWeight="800" sx={{ 
-                color: palette.dark, 
+              <Typography variant="h4" fontWeight="800" sx={{
+                color: palette.dark,
                 mb: 0.5,
                 background: `linear-gradient(135deg, ${palette.dark} 0%, ${palette.primary} 100%)`,
                 backgroundClip: 'text',
@@ -367,23 +370,150 @@ const DashboardPage = () => {
           </Card>
 
           {/* Filtro de Categoría */}
-          <FormControl sx={{ minWidth: 200, background: 'white', borderRadius: 2, boxShadow: '0 2px 8px rgba(139, 115, 85, 0.07)', border: `1px solid ${palette.light}` }}>
-            <InputLabel id="categoria-filtro-label">Filtrar por Categoría</InputLabel>
-            <Select
-              labelId="categoria-filtro-label"
-              value={categoriaFiltro}
-              label="Filtrar por Categoría"
-              onChange={e => setCategoriaFiltro(e.target.value)}
-              sx={{ borderRadius: 2 }}
-            >
-              <MenuItem value=""><em>Todas</em></MenuItem>
-              <MenuItem value="Mocasines">Mocasines</MenuItem>
-              <MenuItem value="Tacones">Tacones</MenuItem>
-              <MenuItem value="Botines">Botines</MenuItem>
-              <MenuItem value="Botas">Botas</MenuItem>
-              <MenuItem value="Sandalias">Sandalias</MenuItem>
-            </Select>
-          </FormControl>
+<FormControl sx={{ 
+  minWidth: 220, 
+  background: `linear-gradient(135deg, ${palette.background} 0%, ${palette.light}15 100%)`,
+  borderRadius: 3,
+  boxShadow: '0 4px 20px rgba(139, 115, 85, 0.1)',
+  border: `2px solid ${palette.light}`,
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    borderColor: palette.primary,
+    boxShadow: `0 4px 25px ${palette.primary}15`
+  },
+  '& .Mui-focused': {
+    borderColor: palette.primary,
+  }
+}}>
+  <InputLabel 
+    id="categoria-filtro-label"
+    sx={{
+      color: palette.primary,
+      fontWeight: 600,
+      fontSize: '0.95rem',
+      '&.Mui-focused': {
+        color: palette.primary,
+      }
+    }}
+  >
+    Filtrar por Categoría
+  </InputLabel>
+  <Select
+    labelId="categoria-filtro-label"
+    value={categoriaFiltro}
+    label="Filtrar por Categoría"
+    onChange={e => setCategoriaFiltro(e.target.value)}
+    sx={{ 
+      borderRadius: 2,
+      fontSize: '0.95rem',
+      fontWeight: 500,
+      color: palette.dark,
+      '& .MuiOutlinedInput-notchedOutline': {
+        border: 'none',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        border: 'none',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        border: 'none',
+      }
+    }}
+    MenuProps={{
+      PaperProps: {
+        sx: {
+          borderRadius: 2,
+          boxShadow: '0 8px 32px rgba(139, 115, 85, 0.15)',
+          border: `1px solid ${palette.light}`,
+          mt: 1,
+          '& .MuiMenuItem-root': {
+            fontSize: '0.9rem',
+            fontWeight: 500,
+            color: palette.dark,
+            '&:hover': {
+              backgroundColor: `${palette.primary}10`,
+            },
+            '&.Mui-selected': {
+              backgroundColor: `${palette.primary}15`,
+              color: palette.primary,
+              fontWeight: 600,
+            }
+          }
+        }
+      }
+    }}
+  >
+    <MenuItem value="" sx={{ fontStyle: 'italic', color: `${palette.primary}80` }}>
+      Todas las categorías
+    </MenuItem>
+    <MenuItem value="Mocasines">Mocasines</MenuItem>
+    <MenuItem value="Tacones">Tacones</MenuItem>
+    <MenuItem value="Botines">Botines</MenuItem>
+    <MenuItem value="Botas">Botas</MenuItem>
+    <MenuItem value="Sandalias">Sandalias</MenuItem>
+  </Select>
+</FormControl>
+
+          {/* Barra de búsqueda */}
+<Box sx={{ 
+  minWidth: 280, 
+  background: `linear-gradient(135deg, ${palette.background} 0%, ${palette.light}15 100%)`,
+  borderRadius: 3,
+  boxShadow: '0 4px 20px rgba(139, 115, 85, 0.1)',
+  border: `2px solid ${palette.light}`,
+  px: 2.5, 
+  py: 1.5, 
+  display: 'flex', 
+  alignItems: 'center',
+  transition: 'all 0.3s ease',
+  '&:focus-within': {
+    borderColor: palette.primary,
+    boxShadow: `0 4px 25px ${palette.primary}20`,
+    transform: 'translateY(-2px)'
+  }
+}}>
+  <SearchIcon sx={{ color: palette.primary, mr: 1.5, fontSize: 22 }} />
+  <input
+    id="search-producto"
+    type="text"
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    placeholder="Buscar producto por nombre o descripción..."
+    style={{
+      border: 'none',
+      outline: 'none',
+      background: 'transparent',
+      fontSize: '1rem',
+      color: palette.dark,
+      flex: 1,
+      padding: '4px 0',
+      fontWeight: '500',
+    }}
+    // El color del placeholder se aplica abajo con CSS
+  />
+  <style>{`
+    #search-producto::placeholder {
+      color: ${palette.primary}CC;
+      font-weight: 400;
+      opacity: 1;
+    }
+  `}</style>
+  {search && (
+    <IconButton 
+      size="small" 
+      onClick={() => setSearch('')}
+      sx={{ 
+        color: palette.primary,
+        p: 0.5,
+        ml: 1,
+        '&:hover': {
+          backgroundColor: `${palette.primary}15`
+        }
+      }}
+    >
+  <ClearIcon fontSize="small" />
+    </IconButton>
+  )}
+</Box>
         </Box>
 
         {/* Products Section */}
@@ -501,9 +631,19 @@ const DashboardPage = () => {
               }}>
                 {products
                   .filter(product => {
-                    if (!categoriaFiltro) return true;
-                    // Normalizar a minúsculas y manejar undefined
-                    return (product.categoria || '').toLowerCase() === categoriaFiltro.toLowerCase();
+                    // Filtro de categoría
+                    if (categoriaFiltro && (product.categoria || '').toLowerCase() !== categoriaFiltro.toLowerCase()) {
+                      return false;
+                    }
+                    // Filtro de búsqueda
+                    if (search.trim()) {
+                      const texto = search.trim().toLowerCase();
+                      return (
+                        product.nombre.toLowerCase().includes(texto) ||
+                        (product.descripcion && product.descripcion.toLowerCase().includes(texto))
+                      );
+                    }
+                    return true;
                   })
                   .map((product) => (
                   <Card key={product.id} sx={{
