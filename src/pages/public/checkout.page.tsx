@@ -65,6 +65,7 @@ const CheckoutPage = () => {
   const [metodoPago, setMetodoPago] = useState("efectivo");
   const [notas, setNotas] = useState("");
   const [confirmado, setConfirmado] = useState(false);
+  const [loadingPedido, setLoadingPedido] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [orderId, setOrderId] = useState<string | null>(null);
 
@@ -150,6 +151,7 @@ const CheckoutPage = () => {
 
   const handleSubmitPago = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoadingPedido(true);
     (async () => {
       try {
         const { getFirestore, collection, addDoc, Timestamp, doc, getDoc, updateDoc, deleteDoc } = await import('firebase/firestore');
@@ -310,6 +312,8 @@ const CheckoutPage = () => {
           background: '#fffdf9',
           color: '#5d4037'
         });
+      } finally {
+        setLoadingPedido(false);
       }
     })();
   };
@@ -653,6 +657,7 @@ const CheckoutPage = () => {
                         <Button 
                           variant="outlined"
                           onClick={handleVolverAEnvio}
+                          disabled={loadingPedido}
                           sx={{
                             borderColor: '#8B7355',
                             color: '#8B7355',
@@ -660,6 +665,8 @@ const CheckoutPage = () => {
                             padding: '16px',
                             fontWeight: 600,
                             flex: 1,
+                            opacity: loadingPedido ? 0.7 : 1,
+                            pointerEvents: loadingPedido ? 'none' : 'auto',
                             '&:hover': {
                               borderColor: '#A0522D',
                               background: 'rgba(139, 115, 85, 0.04)',
@@ -674,6 +681,7 @@ const CheckoutPage = () => {
                           type="submit"
                           variant="contained" 
                           size="large"
+                          disabled={loadingPedido}
                           sx={{
                             background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
                             color: 'white',
@@ -682,6 +690,8 @@ const CheckoutPage = () => {
                             fontWeight: 600,
                             fontSize: '1.1rem',
                             flex: 2,
+                            opacity: loadingPedido ? 0.7 : 1,
+                            pointerEvents: loadingPedido ? 'none' : 'auto',
                             '&:hover': {
                               background: 'linear-gradient(135deg, #A0522D 0%, #8B7355 100%)',
                               transform: 'translateY(-2px)',
@@ -689,7 +699,7 @@ const CheckoutPage = () => {
                             }
                           }}
                         >
-                          Confirmar Pedido
+                          {loadingPedido ? 'Procesando...' : 'Confirmar Pedido'}
                         </Button>
                       </Box>
                     </form>

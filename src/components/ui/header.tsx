@@ -1,7 +1,7 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton, InputBase, Avatar, Button, Badge } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton, InputBase, Avatar, Button, Badge, Drawer, List, ListItem, ListItemText, ListItemButton, Divider } from "@mui/material";
 import { Menu, MenuItem } from "@mui/material";
-import { ShoppingCart, Favorite, Person } from "@mui/icons-material";
+import { ShoppingCart, Favorite, Person, Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import ForumIcon from '@mui/icons-material/Forum';
 import { useUser } from "reactfire";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,10 @@ const Header: React.FC = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  // Drawer para menú móvil
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const handleDrawerOpen = () => setDrawerOpen(true);
+  const handleDrawerClose = () => setDrawerOpen(false);
   const navigate = useNavigate();
   const { logout } = useAuthActions();
   const unreadCount = useUnreadMessages(false);
@@ -35,35 +39,44 @@ const Header: React.FC = () => {
   }, [search]);
 
   return (
-    <AppBar 
-      position="static" 
-      color="transparent" // Cambiado a transparent
-      elevation={1} // Eliminamos la sombra
+    <AppBar
+      position="static"
+      color="transparent"
+      elevation={1}
       sx={{
-        background: 'transparent', // Fondo transparente
-        border: '1px solid transparent', // Sin bordes
-        boxShadow: 'none', // Sin sombras
-        position: 'absolute', // Para que quede sobre el contenido
+        background: 'transparent',
+        border: '1px solid transparent',
+        boxShadow: 'none',
+        position: 'absolute',
         top: 10,
         left: 0,
         right: 0,
         zIndex: 1000
       }}
     >
-      
       <Toolbar
         sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           gap: { xs: 1, md: 2 },
           px: { xs: 1, md: 3 },
-          py: 1
+          py: 1,
+          minHeight: { xs: 56, md: 64 }
         }}
       >
-        {/* Logo / Nombre */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, minWidth: 120 }}>
+        {/* Logo / Nombre y menú hamburguesa */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 120 }}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleDrawerOpen}
+            sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
+          >
+            <MenuIcon sx={{ color: '#8B7355', fontSize: 28 }} />
+          </IconButton>
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -85,42 +98,67 @@ const Header: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Menú principal - ocultar en xs */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+        {/* Menú principal - ocultar en xs, Drawer en xs */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
           {menuItems.map((item) => (
-    <Button
-      key={item.label}
-      color="inherit"
-      onClick={() => navigate(item.path)}
-      sx={{ 
-        fontWeight: 600, 
-        textTransform: "none", 
-        fontSize: "0.95rem",
-        color: '#ffff', // Cambiado a blanco
-        borderRadius: 2,
-        px: 2,
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          background: 'rgba(255, 255, 255, 0.1)', // Fondo más claro al hover
-          color: '#ffffff', // Mantener blanco en hover
-          transform: 'translateY(-1px)'
-        }
-      }}
-    >
-      {item.label}
-    </Button>
+            <Button
+              key={item.label}
+              color="inherit"
+              onClick={() => navigate(item.path)}
+              sx={{
+                fontWeight: 600,
+                textTransform: 'none',
+                fontSize: '0.95rem',
+                color: '#ffff',
+                borderRadius: 2,
+                px: 2,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#ffffff',
+                  transform: 'translateY(-1px)'
+                }
+              }}
+            >
+              {item.label}
+            </Button>
           ))}
         </Box>
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={handleDrawerClose}
+          sx={{ display: { xs: 'block', md: 'none' } }}
+          PaperProps={{ sx: { width: 240, background: '#fffdf9', borderRight: '1px solid #e8dcc8' } }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 2 }}>
+            <Typography variant="h6" fontWeight="bold" sx={{ color: '#8B7355' }}>Menú</Typography>
+            <IconButton onClick={handleDrawerClose}>
+              <CloseIcon sx={{ color: '#8B7355' }} />
+            </IconButton>
+          </Box>
+          <Divider />
+          <List>
+            {menuItems.map((item) => (
+              <ListItem disablePadding key={item.label}>
+                <ListItemButton onClick={() => { navigate(item.path); handleDrawerClose(); }}>
+                  <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, color: '#8B7355' }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
 
         {/* Barra de búsqueda */}
         <Box sx={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           mx: { xs: 0, md: 2 },
           flex: 1,
-          maxWidth: { xs: "100%", md: 400 },
-          minWidth: { xs: "100%", md: 250 },
+          maxWidth: { xs: '100%', md: 400 },
+          minWidth: { xs: '100%', md: 250 },
           my: { xs: 1, md: 0 },
+          order: { xs: 3, md: 2 },
         }}>
           <InputBase
             placeholder="Buscar productos..."
@@ -152,12 +190,13 @@ const Header: React.FC = () => {
         </Box>
 
         {/* Íconos */}
-        <Box sx={{ 
-          display: "flex", 
-          alignItems: "center", 
-          gap: { xs: 0.5, md: 1.5 }, 
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: { xs: 0.5, md: 1.5 },
           minWidth: 120,
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
+          order: { xs: 2, md: 3 }
         }}>
           <IconButton 
             onClick={() => navigate("/chat")}
