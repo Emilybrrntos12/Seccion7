@@ -29,6 +29,7 @@ import {
   ShoppingBag,
   Rocket,
 } from "@mui/icons-material";
+import Swal from 'sweetalert2';
 
 type Product = {
   id: string;
@@ -119,18 +120,37 @@ const DashboardPage = () => {
   }, [user]);
 
   const handleDeleteProduct = async (productId: string, productName: string) => {
-    const confirm = window.confirm(`¿Estás seguro de que deseas eliminar "${productName}"?`);
-    if (!confirm) return;
-    
+    const result = await Swal.fire({
+      title: `¿Eliminar "${productName}"?`,
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#8B7355',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
+    if (!result.isConfirmed) return;
     try {
       const { getFirestore, doc, deleteDoc } = await import('firebase/firestore/lite');
       const app = await import('firebase/app');
       const firestore = getFirestore(app.getApp());
       await deleteDoc(doc(firestore, 'products', productId));
       setProducts(prev => prev.filter(p => p.id !== productId));
+      await Swal.fire({
+        title: '¡Eliminado!',
+        text: 'El producto ha sido eliminado exitosamente.',
+        icon: 'success',
+        confirmButtonColor: '#8B7355',
+      });
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Error al eliminar el producto. Intenta nuevamente.");
+      await Swal.fire({
+        title: 'Error',
+        text: 'Error al eliminar el producto. Intenta nuevamente.',
+        icon: 'error',
+        confirmButtonColor: '#8B7355',
+      });
     }
   };
 
