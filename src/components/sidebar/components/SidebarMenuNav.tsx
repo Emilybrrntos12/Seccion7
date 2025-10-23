@@ -60,7 +60,7 @@ const SidebarMenuNav = ({ ordersCount, onNavigate, pendingOrdersCount = 0, isAdm
               <DashboardIcon sx={{ fontSize: 20, color: palette.primary }} />
             </Box>
           }
-          text="Dashboard"
+          text="Tablero"
           description="Vista general del negocio"
           onClick={() => onNavigate('/admin')}
           isHighlighted={true}

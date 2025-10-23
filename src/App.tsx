@@ -5,7 +5,6 @@ import PublicLayout from "./layout/public.layout"
 import AdminRoute from "./config/admin-route"
 import AuthLayout from "./layout/auth.layout"
 import HomePage from "./pages/public/home.page"
-import HelloPage from "./pages/public/hello.page"
 import ProductDetailPage from "./pages/public/product-detail.page"
 import DashboardPage from "./pages/admin/dashboard.page"
 import ChatPage from "./pages/admin/chat.page"
@@ -46,7 +45,6 @@ const App = () => {
         {/* Publicas */}
         <Route element={<PublicLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="hello" element={<HelloPage />} />
           <Route path="producto/:id" element={<ProductDetailPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
