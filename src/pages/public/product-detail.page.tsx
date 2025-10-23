@@ -212,40 +212,45 @@ const ProductDetailPage = () => {
   return (
     <>
       <Header2 />
-      <Box sx={{ 
-        minHeight: '100vh', 
+      <Box sx={{
+        minHeight: '100vh',
         background: 'linear-gradient(135deg, #fffdf9 0%, #e8dcc8 50%)',
-        paddingTop: '80px',
-        py: 4,
-        pt: 15
+        paddingTop: { xs: '60px', md: '80px' },
+        py: { xs: 2, md: 4 },
+        pt: { xs: 8, md: 15 }
       }}>
-        <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 3 }}>
-
-          <Card sx={{ 
-            width: '100%', 
+        <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 1, sm: 2, md: 3 } }}>
+          <Card sx={{
+            width: '100%',
             boxShadow: '0 8px 32px rgba(139, 115, 85, 0.1)',
-            borderRadius: 4,
+            borderRadius: { xs: 2, md: 4 },
             overflow: 'hidden',
             border: '1px solid #e8dcc8',
-            background: 'white'
+            background: 'white',
+            mb: { xs: 2, md: 0 }
           }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+            <Box sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              flexWrap: 'wrap'
+            }}>
               {/* Sección de imágenes */}
-              <Box sx={{ width: { xs: '100%', md: '45%' }, p: 3 }}>
+              <Box sx={{ width: { xs: '100%', md: '45%' }, p: { xs: 2, md: 3 }, pb: { xs: 0, md: 3 } }}>
                 <Box sx={{ position: 'relative' }}>
                   {/* Imagen principal */}
-                  <Box 
-                    sx={{ 
+                  <Box
+                    sx={{
                       width: '100%',
-                      height: '400px',
-                      borderRadius: 3,
+                      height: { xs: 220, sm: 300, md: 400 },
+                      borderRadius: { xs: 2, md: 3 },
                       overflow: 'hidden',
                       backgroundColor: '#fffdf9',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       border: '1px solid #e8dcc8',
-                      mb: 2
+                      mb: 2,
+                      position: 'relative'
                     }}
                   >
                     <img
@@ -256,47 +261,49 @@ const ProductDetailPage = () => {
                         maxHeight: '100%',
                         objectFit: 'contain',
                         width: 'auto',
-                        height: 'auto'
+                        height: 'auto',
+                        borderRadius: 8
                       }}
                     />
-                    
                     {/* Flechas de navegación */}
                     {images.length > 1 && (
                       <>
-                        <IconButton 
+                        <IconButton
                           onClick={prevImage}
                           sx={{
                             position: 'absolute',
-                            left: 16,
+                            left: { xs: 4, md: 16 },
                             top: '50%',
                             transform: 'translateY(-50%)',
                             background: 'rgba(255, 255, 255, 0.9)',
                             color: '#8B7355',
-                            '&:hover': { 
+                            '&:hover': {
                               background: 'rgba(255, 255, 255, 1)',
                               transform: 'translateY(-50%) scale(1.1)'
                             },
-                            width: 48,
-                            height: 48
+                            width: { xs: 32, md: 48 },
+                            height: { xs: 32, md: 48 },
+                            zIndex: 2
                           }}
                         >
                           <ChevronLeft />
                         </IconButton>
-                        <IconButton 
+                        <IconButton
                           onClick={nextImage}
                           sx={{
                             position: 'absolute',
-                            right: 16,
+                            right: { xs: 4, md: 16 },
                             top: '50%',
                             transform: 'translateY(-50%)',
                             background: 'rgba(255, 255, 255, 0.9)',
                             color: '#8B7355',
-                            '&:hover': { 
+                            '&:hover': {
                               background: 'rgba(255, 255, 255, 1)',
                               transform: 'translateY(-50%) scale(1.1)'
                             },
-                            width: 48,
-                            height: 48
+                            width: { xs: 32, md: 48 },
+                            height: { xs: 32, md: 48 },
+                            zIndex: 2
                           }}
                         >
                           <ChevronRight />
@@ -307,14 +314,20 @@ const ProductDetailPage = () => {
 
                   {/* Miniaturas */}
                   {images.length > 1 && (
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <Box sx={{
+                      display: 'flex',
+                      gap: { xs: 0.5, md: 1 },
+                      justifyContent: 'center',
+                      flexWrap: 'wrap',
+                      mt: { xs: 1, md: 0 }
+                    }}>
                       {images.map((foto, idx) => (
                         <Box
                           key={idx}
                           onClick={() => setSelectedImageIndex(idx)}
                           sx={{
-                            width: 70,
-                            height: 70,
+                            width: { xs: 44, sm: 56, md: 70 },
+                            height: { xs: 44, sm: 56, md: 70 },
                             border: '2px solid',
                             borderColor: selectedImageIndex === idx ? '#8B7355' : '#e8dcc8',
                             borderRadius: 2,
@@ -331,7 +344,7 @@ const ProductDetailPage = () => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            padding: 0.5
+                            p: { xs: 0.2, md: 0.5 }
                           }}
                         >
                           <img
@@ -353,7 +366,7 @@ const ProductDetailPage = () => {
               </Box>
 
               {/* Información del producto */}
-              <Box sx={{ width: { xs: '100%', md: '55%' }, p: 4 }}>
+              <Box sx={{ width: { xs: '100%', md: '55%' }, p: { xs: 2, md: 4 } }}>
                 <CardContent sx={{ p: 0 }}>
                   <Typography variant="h3" fontWeight="700" sx={{ mb: 2, color: '#5d4037' }}>
                     {product.nombre}
@@ -520,7 +533,13 @@ const ProductDetailPage = () => {
                       </Select>
                     </FormControl>
 
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
+                    <Box sx={{
+                      display: 'flex',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 2,
+                      alignItems: { xs: 'stretch', sm: 'center' },
+                      mb: 2
+                    }}>
                       <TextField
                         type="number"
                         label="Cantidad"
@@ -537,37 +556,44 @@ const ProductDetailPage = () => {
                             max: product.stockPorTalla?.[selectedSize] || 99
                           }
                         }}
+                        fullWidth
                         sx={{
                           '& .MuiOutlinedInput-notchedOutline': {
                             borderColor: '#e8dcc8',
                           },
                           '&:hover .MuiOutlinedInput-notchedOutline': {
                             borderColor: '#8B7355',
-                          }
+                          },
+                          fontSize: '1.2rem',
+                          minWidth: { xs: '100%', sm: 180 },
+                          maxWidth: 300
                         }}
                       />
-                      
-                      <Button
-                        variant="contained"
-                        onClick={handleAddToCart}
-                        disabled={addingToCart || !selectedSize || quantity <= 0}
-                        sx={{
-                          background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
-                          color: 'white',
-                          borderRadius: 3,
-                          padding: '12px 24px',
-                          fontWeight: 600,
-                          position: 'relative',
-                          overflow: 'hidden',
-                          '&:disabled': {
-                            background: '#e0e0e0',
-                            color: '#b0b0b0',
-                            cursor: 'not-allowed',
-                          }
-                        }}
-                      >
-                        {addingToCart ? <CircularProgress size={24} sx={{ color: 'white' }} /> : "Agregar al Carrito"}
-                      </Button>
+                      <Box sx={{ width: { xs: '100%', sm: 'auto' } }}>
+                        <Button
+                          variant="contained"
+                          onClick={handleAddToCart}
+                          disabled={addingToCart || !selectedSize || quantity <= 0}
+                          fullWidth
+                          sx={{
+                            mt: { xs: 2, sm: 0 },
+                            background: 'linear-gradient(135deg, #8B7355 0%, #A0522D 100%)',
+                            color: 'white',
+                            borderRadius: 3,
+                            padding: '12px 24px',
+                            fontWeight: 600,
+                            position: 'relative',
+                            overflow: 'hidden',
+                            '&:disabled': {
+                              background: '#e0e0e0',
+                              color: '#b0b0b0',
+                              cursor: 'not-allowed',
+                            }
+                          }}
+                        >
+                          {addingToCart ? <CircularProgress size={24} sx={{ color: 'white' }} /> : "Agregar al Carrito"}
+                        </Button>
+                      </Box>
                     </Box>
 
                     {/* Mensaje de advertencia si no hay stock */}
