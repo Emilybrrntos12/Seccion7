@@ -70,7 +70,9 @@ export const useAuthActions = () => {
             foto: userCredential.user.photoURL ?? "",
             telefono: "",
             aniosNegocio: "",
-            historia: ""
+            historia: "",
+            estado: "activo",
+            ultimaVezEnLinea: new Date().toISOString()
           });
         } catch (firestoreError) {
           console.error("Error creando perfil en Firestore:", firestoreError);
@@ -112,7 +114,16 @@ export const useAuthActions = () => {
                 foto: userCredential.user.photoURL ?? "",
                 telefono: "",
                 aniosNegocio: "",
-                historia: ""
+                historia: "",
+                estado: "activo",
+                ultimaVezEnLinea: new Date().toISOString()
+              });
+            } else {
+              // Si ya existe, actualizar estado y última vez en línea
+              const { updateDoc } = await import('firebase/firestore/lite');
+              await updateDoc(userRef, {
+                estado: "activo",
+                ultimaVezEnLinea: new Date().toISOString()
               });
             }
           } catch (firestoreError) {
@@ -149,6 +160,21 @@ export const useAuthActions = () => {
   const logout = async (): Promise<AuthActionResult> => {
     setLoading(true);
     try {
+      // Actualizar estado a inactivo antes de cerrar sesión
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const { getFirestore, doc, updateDoc } = await import('firebase/firestore/lite');
+          const firestore = getFirestore();
+          const userRef = doc(firestore, "users", user.uid);
+          await updateDoc(userRef, {
+            estado: "inactivo",
+            ultimaVezEnLinea: new Date().toISOString()
+          });
+        } catch (firestoreError) {
+          console.error("Error actualizando estado en Firestore (logout):", firestoreError);
+        }
+      }
       await signOut(auth);
       return {
         success: true,
