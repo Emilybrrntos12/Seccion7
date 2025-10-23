@@ -98,6 +98,27 @@ export const useAuthActions = () => {
       try {
         // Intentar popup primero (mejor experiencia en escritorio)
         const userCredential = await signInWithPopup(auth, provider);
+        // Crear documento en Firestore si no existe
+        if (userCredential.user) {
+          try {
+            const { getFirestore, doc, getDoc, setDoc } = await import('firebase/firestore/lite');
+            const firestore = getFirestore();
+            const userRef = doc(firestore, "users", userCredential.user.uid);
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+              await setDoc(userRef, {
+                nombre: userCredential.user.displayName ?? "",
+                email: userCredential.user.email ?? "",
+                foto: userCredential.user.photoURL ?? "",
+                telefono: "",
+                aniosNegocio: "",
+                historia: ""
+              });
+            }
+          } catch (firestoreError) {
+            console.error("Error creando perfil en Firestore (Google):", firestoreError);
+          }
+        }
         return {
           success: true,
           error: null,
